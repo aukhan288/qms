@@ -13,6 +13,7 @@
     <!-- inject:css -->
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/datatable.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/quill.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     <!-- endinject -->
@@ -23,6 +24,7 @@
         <script src="{{ asset('js/jquery.cookie.js') }}"></script>
         <script src="{{ asset('js/jquery.dataTables.js') }}"></script>
         <script src="{{ asset('js/datatable.min.js') }}"></script>
+        <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
         <script src="{{ asset('js/template.js') }}"></script>
 </head>
 
@@ -147,6 +149,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/admin/templates') }}">
+                            <i class="mdi mdi-office-building menu-icon"></i>
+                            <span class="menu-title">Templates</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                             <i class="mdi mdi-circle-outline menu-icon"></i>
                             <span class="menu-title">UI Elements</span>
@@ -165,6 +173,17 @@
             <div class="main-panel">
                 <div class="content-wrapper">
 
+                    @if(session('success'))
+  <div class="alert alert-success">
+    {{ session('success') }}
+  </div>
+@endif
+
+@if(session('error'))
+  <div class="alert alert-danger">
+    {{ session('error') }}
+  </div>
+@endif
 
                     @yield('content')
 

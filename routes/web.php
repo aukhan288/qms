@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\TemplateController;
 use App\Http\Controllers\user\HomeController;
 use Laravel\Fortify\Fortify;
 
@@ -29,4 +30,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/organizations', [UserController::class, 'index']);
     Route::get('/organizations/list', [UserController::class, 'organizationsList'])->name('organizations.list');
     Route::post('/organizations/store', [UserController::class, 'store'])->name('organizations.store');   
+    
+    Route::get('/templates', [TemplateController::class, 'index']);
+    Route::post('/templates-create', [TemplateController::class, 'create'])->name('template.create');
 });

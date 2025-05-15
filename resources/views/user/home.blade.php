@@ -44,6 +44,18 @@
                 </div>
                 <div class="col-sm-4">
                 <h4 class="text-success">Quarterly Newsletters</h4>
+                @foreach($newsletters as $nl)
+                 <a style="
+                 text-decoration: none;
+    color: #55A850;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
+    font-size:12px;
+    font-weight:700
+                 " href="{{$nl->id}}">{{ $nl->name }}</a><br>
+                @endforeach
                 </div>
             </div>
             <hr>
