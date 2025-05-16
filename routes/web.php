@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TemplateController;
+use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\user\HomeController;
 use Laravel\Fortify\Fortify;
 
@@ -20,6 +21,7 @@ Route::get('/admin/login', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/',[HomeController::class, 'home'])->name('home');
+    Route::post('/download-file',[TemplateController::class, 'downloadFile'])->name('download-file');
 });
 
 
@@ -31,6 +33,10 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/organizations/list', [UserController::class, 'organizationsList'])->name('organizations.list');
     Route::post('/organizations/store', [UserController::class, 'store'])->name('organizations.store');   
     
+    Route::get('/newsletters', [NewsletterController::class, 'index']);
+    Route::get('/newsletters/list', [NewsletterController::class, 'newslettersList'])->name('admin.newsletters.list');
+    Route::post('/newsletters-create', [NewsletterController::class, 'create'])->name('admin.newsletter.create');
+   
     Route::get('/templates', [TemplateController::class, 'index']);
     Route::post('/templates-create', [TemplateController::class, 'create'])->name('template.create');
 });

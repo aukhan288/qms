@@ -143,6 +143,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/admin/newsletters') }}">
+                            <i class="mdi mdi-office-building menu-icon"></i>
+                            <span class="menu-title">Newsletters</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ url('/organizations') }}">
                             <i class="mdi mdi-office-building menu-icon"></i>
                             <span class="menu-title">Organizations</span>

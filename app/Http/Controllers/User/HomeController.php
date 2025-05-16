@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Template;
 use App\Enums\TemplateCategory; 
 
+
 class HomeController extends Controller
 {
     public function home(){
