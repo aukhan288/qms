@@ -1,133 +1,120 @@
 @extends('layouts.app')
+
 @section('content')
-@php
-    use App\Enums\TemplateCategory;
-    use App\Enums\DocumentType;
-@endphp
-<div class="d-none">
-    <button type="button" class="btn btn-primary btn-sm text-white mb-3 ms-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+<div class="d-flex">
+    <button type="button" class="btn btn-primary btn-sm text-white mb-3 ms-auto">
       Add Template
     </button>
 </div>
-<div class="card p-3">
- <form id="orgForm" method="post" action="{{ route('template.create') }}" enctype="multipart/form-data" novalidate>
-        @csrf
- 
-        
-         <div class="row">
-          <div class="col-sm-7 mb-3">
-<label for="name" class="form-label">Template Name <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="name" name="name" required>
-          </div>
-          <div class="col-sm-2 mb-3">
-             <label for="document_type" class="form-label">Document Type <span class="text-danger">*</span></label>
-            <select class="form-select" id="document_type" name="document_type" required>
-              <option value="">Select type</option>
-              @foreach(DocumentType::cases() as $type)
-                <option value="{{ $type->value }}">{{ strtoupper($type->value) }}</option>
-              @endforeach
-            </select>
-          </div>
-          <div class="col-sm-3 mb-3">
-               <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
-            <select class="form-select" id="category" name="category" required>
-              <option value="">Select category</option>
-              @foreach(TemplateCategory::cases() as $category)
-                <option value="{{ $category->value }}">{{ ucfirst($category->value) }}</option>
-              @endforeach
-            </select>
-          </div>
-         </div> 
- 
-          <!-- HTML Content -->
-      <div class="mb-3">
-  <label for="editor" class="form-label">HTML Content <span class="text-danger">*</span></label>
-  <!-- This is the editor container. The textarea will be replaced by Quill.js -->
-<textarea name="html_content" id="editor" class="form-control" rows="10"></textarea>
-
-
+<div class="" style="background-color: #fff;
+    padding: 1.5em;
+    border: 1px solid rgba(0, 0, 0, .3);
+    border-radius: 7px;">
+    <table class="table-sm table table-bordered" id="templatesTable" >
+    </table>
 </div>
 
 
+download-file
 
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary text-white">Save</button>
-        </div>
-      </form>
-      </div>
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form id="orgForm" enctype="multipart/form-data" novalidate>
-        @csrf
-        <div class="modal-header bg-primary text-white">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Template</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
 
-        <div class="modal-body">
-          <!-- Template Name -->
-          <div class="mb-3">
-            <label for="name" class="form-label">Template Name <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="name" name="name" required>
-          </div>
-        
-         <div class="row">
-          <div class="col-sm-4 mb-3">
-             <label for="document_type" class="form-label">Document Type <span class="text-danger">*</span></label>
-            <select class="form-select" id="document_type" name="document_type" required>
-              <option value="">Select type</option>
-              @foreach(DocumentType::cases() as $type)
-                <option value="{{ $type->value }}">{{ strtoupper($type->value) }}</option>
-              @endforeach
-            </select>
-          </div>
-          <div class="col-sm-8 mb-3">
-               <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
-            <select class="form-select" id="category" name="category" required>
-              <option value="">Select category</option>
-              @foreach(TemplateCategory::cases() as $category)
-                <option value="{{ $category->value }}">{{ ucfirst($category->value) }}</option>
-              @endforeach
-            </select>
-          </div>
-         </div> 
- 
-          <!-- HTML Content -->
-        <div class="mb-3" >
-          <label for="html_content" class="form-label">HTML Content <span class="text-danger">*</span></label>
-          <textarea class="form-control" id="html_content" name="html_content" rows="6" required></textarea>
-        </div>
 
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary text-white">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-     CKEDITOR.replace('editor', {
-    toolbar: [
-       { name: 'document', items: ['Source'] },
-      { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
-      { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
-      { name: 'links', items: ['Link', 'Unlink'] },
-      { name: 'insert', items: ['Image', 'Table'] },
-      { name: 'tools', items: ['Maximize'] },
-      { name: 'editing', items: ['Scayt'] }
+$(document).ready(function () {
+    $('#templatesTable').DataTable({
+    processing: true,
+    serverSide: false,
+    ajax: {
+        url: "{{ route('templates.list') }}",
+        type: 'GET',
+        dataSrc: function (json) {
+            console.log(json.data);
+            return json.data ?? json;
+        }
+    },
+    columns: [
+        { title: '#', data: 'id' },
+        { title: 'Ref', data: 'ref' },
+        { title: 'Name', data: 'name' },
+        { title: 'Published', data: '', render: function (data, type, row) {
+            return `<button class="btn btn-sm btn-success" >${row.published ?'Publish':'Un Publish'}</button>`;
+        }},
+        {
+          title: 'Type',
+    data: '',
+    render: function(data, type, row) {
+        let icon = '';
+        if (row.document_type === 'pdf') {
+            icon = 'file-pdf-box text-danger';
+        } else if (row.document_type === 'word') {
+            icon = 'file-word-box text-primary';
+        } else {
+            icon = 'file-document-box'; // default
+        }
+        return `<i class="mdi mdi-${icon}" style="font-size: 24px;"></i>`;
+    }
+},
+
+        { title: 'Category', data: '', render: function (data, type, row) {
+            return row.category.charAt(0).toUpperCase() + row.category.slice(1);
+        }},
+        { title: 'Created Date', data: '', render: function (data, type, row) {
+            return moment(row.created_at).format("MMM Do YYYY");;
+        }},
+        { title: 'Actions', data: '', render: function (data, type, row) {
+            return `
+                <button class="btn btn-sm btn-success download-btn" onclick="downloadFile(${row?.id})">Download</button>
+                <button class="btn btn-sm btn-primary edit-btn" data-id="${row.id}">Edit</button>
+                <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}">Delete</button>
+            `;
+        }, orderable: false, searchable: false }
     ]
-  });
-  });
+});
+
+$('#orgForm').on('submit', function (e) {
+        e.preventDefault();
+
+        let form = $(this)[0];
+        let formData = new FormData(form);
+
+        $.ajax({
+            url: "{{ route('organizations.store') }}",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            headers: {
+                'X-CSRF-TOKEN': $('input[name="_token"]').val()
+            },
+            success: function (response) {
+                // Optionally close modal and show success message
+                $('#staticBackdrop').modal('hide');
+                alert("Organization added successfully!");
+
+                // Optionally clear form
+                $('#orgForm')[0].reset();
+                $('.is-invalid').removeClass('is-invalid');
+                $('.invalid-feedback').remove();
+            },
+            error: function (xhr) {
+                // Remove existing errors
+                $('.is-invalid').removeClass('is-invalid');
+                $('.invalid-feedback').remove();
+
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    for (let field in errors) {
+                        let input = $('[name="' + field + '"]');
+                        input.addClass('is-invalid');
+                        input.after('<div class="invalid-feedback">' + errors[field][0] + '</div>');
+                    }
+                } else {
+                    alert("Something went wrong. Please try again.");
+                }
+            }
+        });
+    });
+});
 </script>
-
-
-
-
 
 @endsection

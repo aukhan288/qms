@@ -1,36 +1,4 @@
-
 <?php
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -43,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('templates', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->string('name');
-            $table->enum('category', ['newsletters', 'procedures', 'records', 'forms']);
-            $table->enum('document_type', ['pdf', 'word']);
-            $table->longText('html_content');
             $table->timestamps();
         });
     }
@@ -59,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('templates');
+        Schema::dropIfExists('roles');
     }
 };

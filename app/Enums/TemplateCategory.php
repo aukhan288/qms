@@ -4,8 +4,12 @@ namespace App\Enums;
 
 enum TemplateCategory: string
 {
-    case Newsletters = 'newsletters';
+
+    case Internal_Documents  = 'internal documents';
     case Procedures  = 'procedures';
-    case Records     = 'records';
-    case Forms       = 'forms';
+    case Procedures_2023  = 'procedures 2023';
+    case Forms     = 'forms';
+    case Forms_2023       = 'forms 2023';
+    case External_Documents  = 'external documents';
+    case Archive     = 'archive';
 }

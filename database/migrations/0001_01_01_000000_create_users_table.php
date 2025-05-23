@@ -11,28 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Create roles table first
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique(); // e.g., 'admin', 'user', etc.
-            $table->string('slug')->unique(); // e.g., 'admin', 'user' (for easy comparison)
-            $table->timestamps();
-        });
-
-        // Then create users table with role_id as foreign key
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('org');          // Organization name (optional)
-            $table->string('profile_pic')->nullable();
-            $table->string('street');        // Street address (required)
-            $table->string('district');      // District or neighborhood (required)
-            $table->string('city');          // City (required)
-            $table->string('postal_code');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -58,9 +42,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sessions');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('users');
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('sessions');
     }
 };

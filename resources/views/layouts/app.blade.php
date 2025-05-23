@@ -5,6 +5,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>QMS</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="{{ asset('mdi/css/materialdesignicons.min.css') }}">
@@ -20,12 +22,14 @@
     <link rel="shortcut icon" href="{{ asset('images/logo.png') }}" />
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/moment.js') }}"></script>
         <script src="{{ asset('js/popper.min.js') }}"></script>
         <script src="{{ asset('js/jquery.cookie.js') }}"></script>
         <script src="{{ asset('js/jquery.dataTables.js') }}"></script>
         <script src="{{ asset('js/datatable.min.js') }}"></script>
         <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
         <script src="{{ asset('js/template.js') }}"></script>
+        <script src="{{ asset('js/common.js') }}"></script>
 </head>
 
 <body>

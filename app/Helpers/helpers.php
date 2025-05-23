@@ -1,5 +1,21 @@
 <?php
 
+use App\Helpers\RoleHelpers;
+
+if (!function_exists('hasRole')) {
+    function hasRole($roles)
+    {
+        return RoleHelpers::hasRole($roles);
+    }
+}
+
+if (!function_exists('isAdmin')) {
+    function isAdmin()
+    {
+        return RoleHelpers::isAdmin();
+    }
+}
+
 if (!function_exists('generatePassword')) {
     function generatePassword($length = 8): string
     {

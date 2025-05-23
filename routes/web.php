@@ -3,28 +3,22 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\TemplateController;
 use App\Http\Controllers\Admin\NewsletterController;
-use App\Http\Controllers\user\HomeController;
-use Laravel\Fortify\Fortify;
+use App\Http\Controllers\Admin\TemplateController;
+use App\Http\Controllers\Admin\AdminController;
+
+
+Auth::routes();
+
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
 
-Route::get('/login', function () {
-    return view('auth.login'); // Default login view for users
-})->name('login');
 
-// Admin login route
-Route::get('/admin/login', function () {
-    return view('auth.admin-login'); // Admin-specific login view
-})->name('admin.login');
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/',[HomeController::class, 'home'])->name('home');
-    Route::post('/download-file',[TemplateController::class, 'downloadFile'])->name('download-file');
-});
-
-
+Route::get('admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
+Route::post('admin/login', [AdminController::class, 'login'])->name('admin.login.submit');
+Route::post('/download-file',[TemplateController::class, 'downloadFile'])->name('download-file');
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     // This route is only accessible by authenticated organizations with the 'admin' role
@@ -36,7 +30,8 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/newsletters', [NewsletterController::class, 'index']);
     Route::get('/newsletters/list', [NewsletterController::class, 'newslettersList'])->name('admin.newsletters.list');
     Route::post('/newsletters-create', [NewsletterController::class, 'create'])->name('admin.newsletter.create');
-   
+    
     Route::get('/templates', [TemplateController::class, 'index']);
+    Route::get('/templates/list', [TemplateController::class, 'templatesList'])->name('templates.list');
     Route::post('/templates-create', [TemplateController::class, 'create'])->name('template.create');
 });
