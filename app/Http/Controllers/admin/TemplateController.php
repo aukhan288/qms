@@ -86,8 +86,8 @@ class TemplateController extends Controller
         $imageData = base64_encode(file_get_contents($imagePath));
         $mimeType = mime_content_type($imagePath);
         $imageTag = '<img src="data:' . $mimeType . ';base64,' . $imageData . '" style="max-width: 100px;" />';
-
-        if ($template->document_type == 'pdf') {
+        if ($template->document_type->value == 'pdf') {
+         
             $html = '
         <html>
         <head>
@@ -152,7 +152,7 @@ class TemplateController extends Controller
                 <div style="width: 100%; font-size: 12px; display: flex; justify-content: space-between;">
                     <div style="text-align: left;">
                         Rev 3 16/04/2025<br>
-                        &copy; Easy PAS Plus &trade; 2025
+                        &copy; LAMTANS &trade; 2025
                     </div>
                     <div style="text-align: right;">
                         A01 Page 
@@ -174,8 +174,9 @@ class TemplateController extends Controller
         ';
 
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
+            
             return $pdf->download($template->name . '.pdf');
-        } else if ($template->document_type == 'word') {
+        } else if ($template->document_type->value == 'word') {
 
 
             // Enable internal error handling for malformed XML

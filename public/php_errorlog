@@ -1,0 +1,76 @@
+[23-May-2025 16:44:21 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:44:27 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:44:29 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:44:30 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:44:55 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:44:57 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:46:14 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:46:15 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:46:16 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:46:17 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:46:17 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:46:17 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:46:17 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:46:17 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:46:17 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:46:18 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:46:18 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php81/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:47:37 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php82/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
+[23-May-2025 16:47:54 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/qms.lamtans.com/public_html/public/../vendor/autoload.php' (include_path='.:/usr/local/php82/pear') in /home/customer/www/qms.lamtans.com/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/qms.lamtans.com/public_html/public/index.php on line 14
