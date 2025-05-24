@@ -33,5 +33,5 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     
     Route::get('/templates', [TemplateController::class, 'index']);
     Route::get('/templates/list', [TemplateController::class, 'templatesList'])->name('templates.list');
-    Route::post('/templates-create', [TemplateController::class, 'create'])->name('template.create');
+    Route::get('/create-template', [TemplateController::class, 'create'])->name('template.create');
 });
