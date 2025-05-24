@@ -3,7 +3,9 @@
 @section('title', 'Login')
 
 @section('content')
+
 <div class="row justify-content-center">
+    <div class="text-center mb-3 mt-5"><img src="{{ asset('images/logo.png') }}" alt=""></div>
     <div class="col-md-6 col-lg-4 card pt-5 pb-5 ms-5 me-4">
         <h3 class="text-center mb-4">Login</h3>
         <form method="POST" action="{{ route('login') }}">
