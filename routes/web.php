@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\NewsletterController;
-use App\Http\Controllers\Admin\TemplateController;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\admin\NewsletterController;
+use App\Http\Controllers\admin\TemplateController;
+use App\Http\Controllers\admin\AdminController;
 
 
 Auth::routes();
