@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->boolean('published')->default(false);
             $table->unsignedBigInteger('user_id'); 
-            $table->string('name');
+            $table->string('name')->unique();
+            $table->string('ref')->unique();
+            $table->integer('revision')->default(1);
+            $table->integer('pages')->default(1);
+            $table->date('revision_date');
             $table->enum('category', ['internal documents','procedures','procedures 2023','forms','forms 2023','external documents','archive']);
             $table->enum('document_type', ['pdf', 'word']);
             $table->longText('content');

@@ -40,7 +40,11 @@ class TemplateController extends Controller
         try {
             Template::create([
                 'name' => $request->name,
-                'user_id' => 1,
+                'user_id' => Auth::id(),
+                'revision' => $request->revision,
+                'pages' => $request->pages,
+                'revision_date' => $request->revision_date,
+                'ref' => $request->ref,
                 'category' => $request->category,
                 'document_type' => $request->document_type,
                 'content' => $request->html_content,

@@ -6,11 +6,7 @@
     use App\Enums\DocumentType;
 @endphp
 
-<div class="d-none">
-    <button type="button" class="btn btn-primary btn-sm text-white mb-3 ms-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-        Add Template
-    </button>
-</div>
+
 
 <div class="card p-3">
     <form id="orgForm"
@@ -61,7 +57,28 @@
 
                 </select>
             </div>
-        </div>
+            
+              <div class="col-sm-1 mb-3">
+                <label for="ref" class="form-label">Ref # <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="ref" name="ref" required
+                       value="{{ old('ref', $template->ref ?? '') }}">
+            </div>
+              <div class="col-sm-1 mb-3">
+                <label for="revision" class="form-label">Revision <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="revision" name="revision" required
+                       value="{{ old('revision', $template->revision ?? '') }}">
+            </div>
+              <div class="col-sm-1 mb-3">
+                <label for="pages" class="form-label">No. Pages <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="pages" name="pages" required
+                       value="{{ old('pages', $template->pages ?? '') }}">
+            </div>
+            <div class="col-sm-3 mb-3">
+              <label for="revision_date" class="form-label">Revision Date <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" id="revision_date" name="revision_date" required
+                     value="{{ old('revision_date', $template->revision_date ?? '') }}">
+          </div>
+       
 
         <!-- HTML Content -->
         <div class="mb-3">
