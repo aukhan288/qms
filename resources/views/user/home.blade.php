@@ -53,6 +53,7 @@
                 <div class="col-sm-4">
                 <h4 class="text-success">Quarterly Newsletters</h4>
                 @foreach($newsletters as $nl)
+               
                  <a style="
                  text-decoration: none;
     color: #55A850;
@@ -64,7 +65,7 @@
     font-weight:700
                  " 
                  onclick="downloadFile('{{ $nl->id }}');  return false;"
-                 href="{{$nl->id}}">{{ $nl->name }}</a><br>
+                 href="{{ Storage::url($nl->file_path) }}">{{ $nl->name }}</a><br>
                 @endforeach 
                 </div>
             </div>
