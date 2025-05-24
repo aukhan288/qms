@@ -82,7 +82,7 @@
 
         <!-- HTML Content -->
         <div class="mb-3">
-            <label for="editor" class="form-label">Content <span class="text-danger">*</span></label>
+            <label for="editor" class="form-label">Content <span class="text-danger">*</span>   <small class="text-muted d-block">Please use HTML for PDF or XML for Word</small></label>
            <textarea name="content" id="editor" class="form-control" style="height: 300px; overflow-y: auto; resize: vertical;">
     {{ old('content', $template->content ?? '') }}
 </textarea>

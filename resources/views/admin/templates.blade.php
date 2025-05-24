@@ -18,11 +18,6 @@
     </table>
 </div>
 
-
-download-file
-
-
-
 <script>
 $(document).ready(function () {
     $('#templatesTable').DataTable({

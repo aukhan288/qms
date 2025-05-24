@@ -47,7 +47,7 @@ class TemplateController extends Controller
                 'ref' => $request->ref,
                 'category' => $request->category,
                 'document_type' => $request->document_type,
-                'content' => $request->html_content,
+                'content' => $request->content,
             ]);
 
             return redirect()->back()->with('success', 'Template created successfully.');
