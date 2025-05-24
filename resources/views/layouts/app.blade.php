@@ -112,7 +112,7 @@
                     <li class="nav-item nav-profile dropdown">
     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
         <img 
-            src="{{ Auth::user()->profile_pic ? asset(Auth::user()->profile_pic) : asset('images/profile.png') }}" 
+            src="{{ Auth::user()->profile_pic ? Storage::url(Auth::user()->profile_pic) : asset('images/profile.png') }}" 
             alt="profile"
         />
         <span class="nav-profile-name">{{ Auth::user()->name }}</span>
