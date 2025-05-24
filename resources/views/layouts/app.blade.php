@@ -39,8 +39,8 @@
         <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="navbar-brand-wrapper d-flex justify-content-center">
                 <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">
-                    <a class="navbar-brand brand-logo" href="{{ url('/') }}"><img src="{{ asset('images/logo.png') }}" alt="logo" /></a>
-                    <a class="navbar-brand brand-logo-mini" href="{{ url('/') }}"><img src="images/logo.png" alt="logo" /></a>
+                    <a class="navbar-brand brand-logo" href="{{ url('/admin') }}"><img src="{{ asset('images/logo.png') }}" alt="logo" /></a>
+                    <a class="navbar-brand brand-logo-mini" href="{{ url('/admin') }}"><img src="images/logo.png" alt="logo" /></a>
                     <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
                         <span class="mdi mdi-sort-variant"></span>
                     </button>
@@ -141,7 +141,7 @@
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}">
+                        <a class="nav-link" href="{{ url('/admin') }}">
                             <i class="mdi mdi-home menu-icon"></i>
                             <span class="menu-title">Dashboard</span>
                         </a>
@@ -153,7 +153,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/organizations') }}">
+                        <a class="nav-link" href="{{ url('/admin/organizations') }}">
                             <i class="mdi mdi-office-building menu-icon"></i>
                             <span class="menu-title">Organizations</span>
                         </a>
