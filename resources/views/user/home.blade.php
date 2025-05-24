@@ -40,11 +40,11 @@
                     <span>
                     <img src="{{ Storage::url(Auth::user()->profile_pic) }}" class="img-fluid" alt="Profile Picture" />
                     </span>
-                    <p class="mt-3">{{ Auth::user()->org }}</p>
-                    <p class="mt-3">{{ Auth::user()->street }}</p>
-                    <p class="mt-3">{{ Auth::user()->district }}</p>
-                    <p class="mt-3">{{ Auth::user()->city }}</p>
-                    <p class="mt-3">{{ Auth::user()->postal_code }}</p>
+                    <p class="mt-3">{{ Auth::user()->org }} <br>
+                    {{ Auth::user()->street }} <br>
+                    {{ Auth::user()->district }} <br>
+                    {{ Auth::user()->city }} <br>
+                    {{ Auth::user()->postal_code }}</p>
                 </div>
                 <div class="col-sm-4 border-end border-1">
                   <h4 class="text-success">Nominee</h4>
