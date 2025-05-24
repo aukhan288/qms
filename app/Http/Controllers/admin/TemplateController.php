@@ -166,7 +166,7 @@ class TemplateController extends Controller
             </footer>
 
             <div class="content">
-                ' . $template->html_content . '
+                ' . $template->content . '
             </div>
 
         </body>
