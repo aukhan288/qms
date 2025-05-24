@@ -20,10 +20,10 @@
 
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('images/logo.png') }}" />
+    <script src="{{ asset('js/popper.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-        <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/moment.js') }}"></script>
-        <script src="{{ asset('js/popper.min.js') }}"></script>
         <script src="{{ asset('js/jquery.cookie.js') }}"></script>
         <script src="{{ asset('js/jquery.dataTables.js') }}"></script>
         <script src="{{ asset('js/datatable.min.js') }}"></script>
@@ -110,25 +110,31 @@
                         </div>
                     </li>
                     <li class="nav-item nav-profile dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
-                        <img 
-                            src="{{ Auth::user()->profile_pic ? asset(Auth::user()->profile_pic) : asset('images/profile.png') }}" 
-                            alt="profile"
-                        />
+    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
+        <img 
+            src="{{ Auth::user()->profile_pic ? asset(Auth::user()->profile_pic) : asset('images/profile.png') }}" 
+            alt="profile"
+        />
+        <span class="nav-profile-name">{{ Auth::user()->name }}</span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+        <a class="dropdown-item" href="#">
+            <i class="mdi mdi-settings text-primary"></i>
+            Settings
+        </a>
+        <a class="dropdown-item" href="{{ route('logout') }}"
+           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="mdi mdi-logout text-primary"></i>
+            Logout
+        </a>
+    </div>
+</li>
 
-                            <span class="nav-profile-name">Louis Barnett</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                            <a class="dropdown-item">
-                                <i class="mdi mdi-settings text-primary"></i>
-                                Settings
-                            </a>
-                            <a class="dropdown-item">
-                                <i class="mdi mdi-logout text-primary"></i>
-                                Logout
-                            </a>
-                        </div>
-                    </li>
+<!-- Hidden logout form (outside dropdown, ideally near bottom of the page) -->
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
                 </ul>
                 <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
                     <span class="mdi mdi-menu"></span>
