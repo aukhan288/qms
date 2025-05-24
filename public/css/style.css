@@ -10585,7 +10585,7 @@ progress {
 .form-control, .dataTables_wrapper select {
   display: block;
   width: 100%;
-  padding: 0.875rem 1.375rem;
+  padding: 0.67rem 1.375rem;
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1;
@@ -10785,7 +10785,7 @@ textarea.form-control-lg {
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 16px 12px;
-  border: 1px solid #ced4da;
+  border: 1px solid #686868;
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   appearance: none;
@@ -21608,13 +21608,13 @@ code {
 
 .input-group-append .input-group-text,
 .input-group-prepend .input-group-text {
-  border-color: #f3f3f3;
+  border-color: #686868;
   padding: 0.875rem 0.75rem;
   color: #c9c8c8;
 }
 
 .form-control, .dataTables_wrapper select {
-  border: 1px solid #f3f3f3;
+  border: 1px solid #686868;
   font-weight: 400;
   font-size: 0.875rem;
 }
@@ -21622,20 +21622,20 @@ code {
 select.form-control, .dataTables_wrapper select {
   padding: .4375rem .75rem;
   border: 0;
-  outline: 1px solid #f3f3f3;
+  outline: 1px solid #686868;
   color: #c9c8c8;
 }
 
 select.form-control:focus, .dataTables_wrapper select:focus {
-  outline: 1px solid #f3f3f3;
+  outline: 1px solid #686868;
 }
 
 select.form-control.border-primary, .dataTables_wrapper select.border-primary {
-  outline: 1px solid #002e54;
+  outline: 1px solid #686868;
 }
 
 select.form-control.border-primary:focus, .dataTables_wrapper select.border-primary:focus {
-  outline: 1px solid #002e54;
+  outline: 1px solid #686868;
 }
 
 select.form-control.border-secondary, .dataTables_wrapper select.border-secondary {
@@ -21679,19 +21679,19 @@ select.form-control.border-danger:focus, .dataTables_wrapper select.border-dange
 }
 
 select.form-control.border-light, .dataTables_wrapper select.border-light {
-  outline: 1px solid #f8f9fa;
+  outline: 1px solid #686868;
 }
 
 select.form-control.border-light:focus, .dataTables_wrapper select.border-light:focus {
-  outline: 1px solid #f8f9fa;
+  outline: 1px solid #686868;
 }
 
 select.form-control.border-dark, .dataTables_wrapper select.border-dark {
-  outline: 1px solid #282f3a;
+  outline: 1px solid #686868;
 }
 
 select.form-control.border-dark:focus, .dataTables_wrapper select.border-dark:focus {
-  outline: 1px solid #282f3a;
+  outline: 1px solid #686868;
 }
 
 .form-group label {
@@ -23186,5 +23186,9 @@ dl li {
   background-color: darkgrey;
   outline: 1px solid slategrey;
 }
-
+.pageHeading {
+    color: #002e54;
+    font-size: 26px;
+    font-weight: 700;
+}
 /*# sourceMappingURL=maps/style.css.map */

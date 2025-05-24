@@ -7,7 +7,9 @@
 @endphp
 
 
-
+<div class="mb-3">
+    <span class="pageHeading">{{$title??''}}</span>
+</div>
 <div class="card p-3">
     <form id="orgForm"
           method="POST"

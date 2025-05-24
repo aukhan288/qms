@@ -188,7 +188,7 @@
             <!-- partial -->
             <div class="main-panel">
                 <div class="content-wrapper">
-
+                
                     @if(session('success'))
   <div class="alert alert-success">
     {{ session('success') }}

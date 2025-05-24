@@ -30,8 +30,8 @@ class TemplateController extends Controller
         if ($id) {
             $template = Template::findOrFail($id);
         }
-
-        return view('admin.create-template', compact('template'));
+        $title = $id ? 'Edit Template' : 'Create Template';
+        return view('admin.create-template', compact('template','title'));
     }
 
 
