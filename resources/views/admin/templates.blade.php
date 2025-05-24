@@ -2,9 +2,13 @@
 
 @section('content')
 <div class="d-flex">
-    <button type="button" class="btn btn-primary btn-sm text-white mb-3 ms-auto">
-      Add Template
-    </button>
+<button 
+  type="button" 
+  class="btn btn-primary btn-sm text-white mb-3 ms-auto" 
+  onclick="window.location.href='{{ url('admin/template') }}'">
+  Add Template
+</button>
+
 </div>
 <div class="" style="background-color: #fff;
     padding: 1.5em;
