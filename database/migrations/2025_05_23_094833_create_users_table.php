@@ -13,11 +13,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
+            $table->string('org');          // Organization name (optional)
+            $table->string('profile_pic')->nullable();
+            $table->string('street');        // Street address (required)
+            $table->string('district');      // District or neighborhood (required)
+            $table->string('city');          // City (required)
+            $table->string('postal_code');
             $table->timestamps();
         });
 
