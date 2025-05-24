@@ -5,7 +5,7 @@ use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\NewsletterController;
 use App\Http\Controllers\admin\TemplateController;
-use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\Admin\AdminController;
 
 
 Auth::routes();
