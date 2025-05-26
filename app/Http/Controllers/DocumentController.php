@@ -11,9 +11,9 @@ class DocumentController extends Controller
     {
 
         $title = ucwords($category);
-        $documents = Template::where('category', $category)->get('id,ref,name, document_type,category, revision,pages,revision_date');
+        $documents = Template::where('category', $category)->get('id','ref','name', 'document_type','category', 'revision','pages','revision_date');
         
-        return view('user.documents',compact('title'));
+        return view('user.documents',compact('title','documents'));
 
     }
 }
