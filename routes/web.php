@@ -6,12 +6,13 @@ use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\NewsletterController;
 use App\Http\Controllers\admin\TemplateController;
 use App\Http\Controllers\Admin\AdminController;
-
+use App\Http\Controllers\DocumentController;
 
 Auth::routes();
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/documents/{category}', [DocumentController::class, 'documents'])->name('documents');
 
 
 
