@@ -62,9 +62,9 @@ $(document).ready(function () {
         }},
         { title: 'Actions', data: '', render: function (data, type, row) {
             return `
-                <button class="btn btn-sm btn-success download-btn" onclick="downloadFile(${row?.id})">Download</button>
-                <button class="btn btn-sm btn-primary edit-btn" data-id="${row.id}">Edit</button>
-                <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}">Delete</button>
+                <button class="btn btn-sm btn-success download-btn" onclick="downloadFile(${row?.id})"><i class="mdi mdi-download"></i></button>
+                <button class="btn btn-sm btn-primary edit-btn" onclick="window.location.href='https://qms.lamtans.com/admin/template/${row?.id}'"><i class="mdi mdi-pencil"></i></button>
+                <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}"><i class="mdi mdi-delete"></i></button>
             `;
         }, orderable: false, searchable: false }
     ]

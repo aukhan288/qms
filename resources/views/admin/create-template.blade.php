@@ -80,12 +80,17 @@
               <input type="date" class="form-control" id="revision_date" name="revision_date" required
                      value="{{ old('revision_date', $template->revision_date ?? '') }}">
           </div>
+            <div class="col-sm-6 mb-3" id="wordDiv" style="display:none">
+              <label for="file" class="form-label">Word File <span class="text-danger">*</span></label>
+              <input type="file" class="form-control" id="file" name="file" 
+                     value="" disabled>
+          </div>
        
 
         <!-- HTML Content -->
-        <div class="mb-3">
-            <label for="editor" class="form-label">Content <span class="text-danger">*</span>   <small class="text-muted d-block">Please use HTML for PDF or XML for Word</small></label>
-           <textarea name="content" id="editor" class="form-control" style="height: 300px; overflow-y: auto; resize: vertical;">
+        <div class="mb-3" id="htmlDiv" style="display:none">
+            <label for="editor" class="form-label">Content <span class="text-danger">*</span>   <small class="text-muted d-block">Please use HTML for PDF</small></label>
+           <textarea name="content" id="editor" class="form-control" style="height: 300px; overflow-y: auto; resize: vertical;" disabled>
     {{ old('content', $template->content ?? '') }}
 </textarea>
 
@@ -100,7 +105,39 @@
 
 {{-- CKEditor Script --}}
 <script>
-  
+    $(document).ready(function(){
+        let template = @json($template);
+     if (template) {
+    if (template?.document_type == 'word') {
+        $('#htmlDiv').hide();
+        $('#htmlDiv textarea').prop('disabled', true);
+        $('#wordDiv').show();
+        $('#wordDiv input').prop('disabled', false);
+    } else {
+        $('#htmlDiv').show();
+        $('#htmlDiv textarea').prop('disabled', false);
+        $('#wordDiv').hide();
+        $('#wordDiv input').prop('disabled', true);
+    }
+}
+
+    });
+$('#document_type').on('change', function () {
+    const value = $(this).val();
+
+    if (value === 'pdf') {
+        $('#htmlDiv').show().find('textarea').prop('disabled', false);
+        $('#wordDiv').hide().find('input').prop('disabled', true);
+    } else if (value === 'word') {
+        $('#htmlDiv').hide().find('textarea').prop('disabled', true);
+        $('#wordDiv').show().find('input').prop('disabled', false);
+    } else {
+        $('#htmlDiv, #wordDiv').hide();
+        $('#htmlDiv textarea, #wordDiv input').prop('disabled', true);
+    }
+});
+
+
     document.addEventListener('DOMContentLoaded', function () {
         // CKEDITOR.replace('editor', {
         //     toolbar: [

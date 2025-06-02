@@ -15,6 +15,11 @@ use PhpOffice\PhpWord\Shared\Html;
 use PhpOffice\PhpWord\SimpleType\Jc;
 use HTMLPurifier;
 use HTMLPurifier_Config;
+use PhpOffice\PhpWord\Element\AbstractContainer;
+use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpWord\Element\Table;
+use PhpOffice\PhpWord\Style\Table as TableStyle;
+
 
 class TemplateController extends Controller
 {
@@ -35,26 +40,63 @@ class TemplateController extends Controller
     }
 
 
-    public function create(Request $request)
-    {
-        try {
-            Template::create([
-                'name' => $request->name,
-                'user_id' => Auth::id(),
-                'revision' => $request->revision,
-                'pages' => $request->pages,
-                'revision_date' => $request->revision_date,
-                'ref' => $request->ref,
-                'category' => $request->category,
-                'document_type' => $request->document_type,
-                'content' => $request->content,
-            ]);
-
-            return redirect()->back()->with('success', 'Template created successfully.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to create template: ' . $e->getMessage());
+    public function create(Request $request, $id = null)
+{
+    try {
+        // Validation
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'revision' => 'required|integer',
+            'pages' => 'required|integer',
+            'revision_date' => 'required|date',
+            'ref' => 'required|string|max:100',
+            'category' => 'required|string',
+            'document_type' => 'required|in:word,pdf',
+            
+            'content' => 'nullable|string',
+        ]);
+if ($request->hasFile('file')) {
+            $data['file'] = $request->file('file')->store('templates', 'public');
         }
+
+// 'file' => 'nullable|file|mimes:doc,docx|max:2048',
+        // If $id is provided, fetch the template or create a new one
+        $template = $id ? Template::findOrFail($id) : new Template();
+
+        // Assign common fields
+        $template->name = $request->name;
+        $template->user_id = Auth::id();
+        $template->revision = $request->revision;
+        $template->pages = $request->pages;
+        $template->revision_date = $request->revision_date;
+        $template->ref = $request->ref;
+        $template->category = $request->category;
+        $template->document_type = $request->document_type;
+
+        // Handle content or file based on document type
+        if ($request->document_type === 'pdf') {
+            $template->content = $request->content;
+            $template->file_path = null; // remove any previous file
+        } elseif ($request->document_type === 'word' && $request->hasFile('file')) {
+            $directory = storage_path('app/public/templates');
+            if (!is_dir($directory)) {
+                mkdir($directory, 0775, true);
+            }
+            $filePath = $filePath = $request->file('file')->store('templates'); // stores in storage/app/templates;
+            $template->file_path = $filePath;
+            $template->content = null; // remove any previous HTML content
+        }
+
+        // Save the template
+        $template->save();
+
+        $message = $id ? 'Template updated successfully.' : 'Template created successfully.';
+        return redirect()->back()->with('success', $message);
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Failed to save template: ' . $e->getMessage());
     }
+}
+
 
     
     public function templatesList(Request $request)
@@ -82,6 +124,12 @@ class TemplateController extends Controller
         if (!file_exists($imagePath)) {
             abort(404, 'Profile image not found.');
         }
+        
+        $template->content = str_replace(
+            ['{{ Name }}', '{{ CompanyName }}', '{{ Street }}', '{{ District }}', '{{ City }}', '{{ PostalCode }}'],
+            [Auth::user()->name, Auth::user()->org, Auth::user()->street, Auth::user()->district, Auth::user()->city, Auth::user()->postal_code],
+            $template->content
+        );
 
         $imageData = base64_encode(file_get_contents($imagePath));
         $mimeType = mime_content_type($imagePath);
@@ -139,6 +187,9 @@ class TemplateController extends Controller
                 .content {
                     margin-top: 20px;
                 }
+                p{
+                 font-size:14px;
+                }
             </style>
         </head>
         <body>
@@ -151,7 +202,7 @@ class TemplateController extends Controller
             <footer>
                 <div style="width: 100%; font-size: 12px; display: flex; justify-content: space-between;">
                     <div style="text-align: left;">
-                        Rev 3 16/04/2025<br>
+                        Rev '.$template->revision.' '.$template->revision_date.'<br>
                         &copy; LAMTANS &trade; 2025
                     </div>
                     <div style="text-align: right;">
@@ -177,149 +228,96 @@ class TemplateController extends Controller
             
             return $pdf->download($template->name . '.pdf');
         } else if ($template->document_type->value == 'word') {
+ // Step 1: Load original Word document
+$sourcePath = storage_path('app/public/' . $template->file_path);
 
-
-            // Enable internal error handling for malformed XML
-            libxml_use_internal_errors(true);
-
-            // Your XML content (replace with dynamic content if needed)
-            $xmlContent = $template->content; // Your XML content 
-            // <<<XML XML;
-
-            // Load XML content
-
-
-            // $xmlContent = $template->html_content; // Your XML content
-
-            $xml = simplexml_load_string($xmlContent);
-if ($xml === false) {
-    foreach (libxml_get_errors() as $error) {
-        echo "XML Error: ", $error->message, "\n";
-    }
-    libxml_clear_errors();
-    abort(500, 'Invalid XML content provided.');
+if (!file_exists($sourcePath)) {
+    abort(404, 'File not found.');
 }
 
-// Create PhpWord object
-$phpWord = new PhpWord();
-$section = $phpWord->addSection();
+$phpWord = IOFactory::load($sourcePath);
 
-// ✅ Add Header: Image + Title in a single row using a table
-$header = $section->addHeader();
-$phpWord->addTableStyle('HeaderTable', ['borderSize' => 0,'borderColor'=> 'FFFFFF', 'cellMargin' => 0]);
-$headerTable = $header->addTable('HeaderTable');
-$headerTable->addRow();
+// Define header/footer table styles
+$headerTableStyleName = 'HeaderTable';
+$headerTableStyle = ['borderSize' => 0, 'borderColor' => 'FFFFFF', 'cellMargin' => 0];
+$footerTableStyleName = 'FooterTable';
+$footerTableStyle = ['borderSize' => 0, 'borderColor' => 'FFFFFF', 'cellMargin' => 50];
 
-// Column 1: Image
-$imagePath = public_path('storage/' . Auth::user()->profile_pic);
-if (file_exists($imagePath)) {
-    $headerTable->addCell(1000, ['valign' => 'center'])->addImage($imagePath, [
-        'width' => 80,
-        'alignment' => Jc::LEFT,
-    ]);
-} else {
-    Log::error('Profile image not found: ' . $imagePath);
-    $headerTable->addCell(1000)->addText('');
-}
+$phpWord->addTableStyle($headerTableStyleName, $headerTableStyle);
+$phpWord->addTableStyle($footerTableStyleName, $footerTableStyle);
 
-// Column 2: Centered Text
-$headerTable->addCell(8000, ['valign' => 'center'])->addText(
-    'DOC-001 Test Document',
-    ['bold' => true, 'size' => 14],
-    ['alignment' => Jc::CENTER]
-);
-
-// ✅ Table style for document body
-$tableStyleName = 'BorderedTable';
-$phpWord->addTableStyle($tableStyleName, [
+// Define a new style for main content tables with borders (for new tables, if any)
+$customTableStyleName = 'CustomBorderStyle';
+$customTableStyle = [
     'borderSize' => 6,
-    'borderColor' => '000000',
+    'borderColor' => '000000', // Use hex color code for black
     'cellMargin' => 80,
-]);
+];
+$phpWord->addTableStyle($customTableStyleName, $customTableStyle);
 
-// ✅ Recursive function to parse XML
-function parseXmlToWord($xml, $section, $phpWord, $tableStyleName)
-{
-    foreach ($xml->children() as $element) {
-        $tag = strtolower($element->getName());
-
-        switch ($tag) {
-            case 'p':
-                $section->addText(trim((string)$element));
-                break;
-
-            case 'h1':
-                $section->addText(trim((string)$element), ['bold' => true, 'size' => 20]);
-                break;
-
-            case 'h2':
-                $section->addText(trim((string)$element), ['bold' => true, 'size' => 16]);
-                break;
-
-            case 'h3':
-                $section->addText(trim((string)$element), ['bold' => true, 'size' => 14]);
-                break;
-
-            case 'ul':
-            case 'ol':
-                foreach ($element->li as $li) {
-                    $section->addListItem(strip_tags((string)$li), 0, [], $tag === 'ol' ? 'number' : 'bullet');
+// Fix: Manually apply borders to each cell of existing tables
+foreach ($phpWord->getSections() as $section) {
+    foreach ($section->getElements() as $element) {
+        if ($element instanceof Table) {
+            foreach ($element->getRows() as $row) {
+                foreach ($row->getCells() as $cell) {
+                    $cellStyle = $cell->getStyle();
+                    $cellStyle->setBorderSize(6);
+                    $cellStyle->setBorderColor('000000');
                 }
-                break;
-
-            case 'table':
-                $table = $section->addTable($tableStyleName);
-
-                if (isset($element->thead)) {
-                    foreach ($element->thead->row as $row) {
-                        $table->addRow();
-                        foreach ($row->cell as $cell) {
-                            $table->addCell(5000)->addText(trim((string)$cell), ['bold' => true]);
-                        }
-                    }
-                }
-
-                if (isset($element->tbody)) {
-                    foreach ($element->tbody->row as $row) {
-                        $table->addRow();
-                        foreach ($row->cell as $cell) {
-                            $table->addCell(5000)->addText(trim((string)$cell));
-                        }
-                    }
-                }
-                break;
-
-            case 'note':
-                $section->addText("NOTE: " . trim((string)$element), ['italic' => true, 'size' => 10]);
-                break;
-
-            case 'list':
-                foreach ($element->item as $item) {
-                    $section->addListItem(trim((string)$item), 0, [], 'bullet');
-                }
-                break;
-
-            default:
-                $text = trim((string)$element);
-                if ($text !== '') {
-                    $section->addText($text);
-                }
+            }
         }
     }
 }
 
-// Parse the XML
-parseXmlToWord($xml, $section, $phpWord, $tableStyleName);
+// Process each section to add header/footer
+foreach ($phpWord->getSections() as $section) {
 
-// ✅ Footer
-$footer = $section->addFooter();
-$footer->addPreserveText('Page {PAGE} of {NUMPAGES}', null, ['alignment' => Jc::RIGHT]);
+    // Add Header
+    $header = $section->addHeader();
+    $headerTable = $header->addTable($headerTableStyleName);
+    $headerTable->addRow();
 
-// ✅ Save and return file
+    $imagePath = public_path('storage/' . Auth::user()->profile_pic);
+    if (file_exists($imagePath)) {
+        $headerTable->addCell(1000, ['valign' => 'center'])->addImage($imagePath, [
+            'width' => 80,
+            'alignment' => Jc::LEFT,
+        ]);
+    } else {
+        Log::error('Profile image not found: ' . $imagePath);
+        $headerTable->addCell(1000)->addText('');
+    }
+
+    $headerTable->addCell(8000, ['valign' => 'center'])->addText(
+        $template->ref . ' ' . $template->name,
+        ['bold' => true, 'size' => 14],
+        ['alignment' => Jc::CENTER]
+    );
+
+    // Add Footer
+    $footer = $section->addFooter();
+    $footerTable = $footer->addTable($footerTableStyleName);
+    $footerTable->addRow();
+
+    $leftCell = $footerTable->addCell(7000);
+    $leftCell->addText('Rev ' . $template->revision . ' ' . $template->revision_date, ['size' => 10]);
+    $leftCell->addText('© LAMTANS™ 2025', ['size' => 10]);
+
+    $rightCell = $footerTable->addCell(3000, ['valign' => 'bottom']);
+    $rightCell->addPreserveText('Page {PAGE} of {NUMPAGES}', null, ['alignment' => Jc::RIGHT]);
+}
+
+// Save modified document
 $filename = $template->name . '.docx';
-$savePath = public_path($filename);
-IOFactory::createWriter($phpWord, 'Word2007')->save($savePath);
+$savePath = storage_path('app/' . $filename);
+$writer = IOFactory::createWriter($phpWord, 'Word2007');
+$writer->save($savePath);
+
+// Return as download
 return response()->download($savePath, $filename)->deleteFileAfterSend(true);
+
+
         } else {
             abort(400, 'Unsupported document type.');
         }

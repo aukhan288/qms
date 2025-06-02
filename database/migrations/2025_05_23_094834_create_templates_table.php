@@ -22,7 +22,8 @@ return new class extends Migration
             $table->date('revision_date');
             $table->enum('category', ['internal documents','procedures','procedures 2023','forms','forms 2023','external documents','archive']);
             $table->enum('document_type', ['pdf', 'word']);
-            $table->longText('content');
+            $table->longText('content')->nullable();
+            $table->string('file_path')->nullable();
             $table->timestamps();
         });
     }

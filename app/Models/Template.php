@@ -18,7 +18,8 @@ class Template extends Model
         'user_id',
         'category',
         'document_type',
-        'content'
+        'content',
+        'file_path'
     ];
 
     protected $casts = [

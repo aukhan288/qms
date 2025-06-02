@@ -23191,4 +23191,8 @@ dl li {
     font-size: 26px;
     font-weight: 700;
 }
+
+.tbl-tr{
+      border-bottom: 8px solid #e2e2e2 !important;
+}
 /*# sourceMappingURL=maps/style.css.map */

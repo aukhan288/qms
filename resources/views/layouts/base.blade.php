@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Auth')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('mdi/css/materialdesignicons.min.css') }}">
 
     <!-- End plugin css for this page -->
@@ -40,6 +40,7 @@
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/popper.min.js') }}"></script>
     <script src="{{ asset('js/template.js') }}"></script>
+    <script src="{{ asset('js/common.js') }}"></script>
     <!-- endinject -->
     <!-- Custom js for this page-->
     
