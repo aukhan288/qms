@@ -99,24 +99,69 @@ if ($request->hasFile('file')) {
 
 
     
-    public function templatesList(Request $request)
-    {
-        $templates = Template::query();
-           
-        if ($request->has('search')) {
-            $templates->where('name', 'like', '%' . $request->search . '%');
-        }
+  public function templatesList(Request $request)
+{
+    $query = Template::query();
 
-        if ($request->has('category')) {
-            $templates->where('category', $request->category);
-        }
-
-        if ($request->has('document_type')) {
-            $templates->where('document_type', $request->document_type);
-        }
-
-        return response()->json($templates->get());
+    // Search logic
+    if (!empty($request->input('search.value'))) {
+        $search = $request->input('search.value');
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('ref', 'like', "%{$search}%")
+              ->orWhere('category', 'like', "%{$search}%")
+              ->orWhere('document_type', 'like', "%{$search}%");
+        });
     }
+
+    // Optional filters (custom from client)
+    if ($request->has('category')) {
+        $cat = $request->input('category');
+        is_array($cat)
+            ? $query->whereIn('category', $cat)
+            : $query->where('category', $cat);
+    }
+
+    if ($request->has('document_type')) {
+        $type = $request->input('document_type');
+        is_array($type)
+            ? $query->whereIn('document_type', $type)
+            : $query->where('document_type', $type);
+    }
+
+    // Get total count before filtering
+    $recordsTotal = Template::count();
+
+    // Count after filtering
+    $recordsFiltered = $query->count();
+
+    // Ordering
+    $orderColumnIndex = $request->input('order.0.column');
+    $orderDirection = $request->input('order.0.dir', 'desc');
+    $columns = ['id', 'ref', 'name', 'published', 'document_type', 'category', 'created_at'];
+
+    if (isset($columns[$orderColumnIndex])) {
+        $query->orderBy($columns[$orderColumnIndex], $orderDirection);
+    } else {
+        $query->orderBy('id', 'desc'); // default
+    }
+
+    // Pagination
+    $start = $request->input('start', 0);
+    $length = $request->input('length', 10);
+    $data = $query->skip($start)->take($length)->get();
+
+    return response()->json([
+        'draw' => intval($request->input('draw')),
+        'recordsTotal' => $recordsTotal,
+        'recordsFiltered' => $recordsFiltered,
+        'data' => $data,
+    ]);
+}
+
+
+
+
     public function downloadFile(Request $request)
     {
         $template = Template::findOrFail($request->id);
@@ -188,7 +233,13 @@ if ($request->hasFile('file')) {
                     margin-top: 20px;
                 }
                 p{
-                 font-size:14px;
+                 font-size:12px;
+                }
+                ol {
+                    font-size: 12px;
+                }
+                ul {
+                    font-size: 12px;
                 }
             </style>
         </head>

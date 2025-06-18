@@ -20,15 +20,16 @@
 
 <script>
 $(document).ready(function () {
-    $('#templatesTable').DataTable({
+   $('#templatesTable').DataTable({
     processing: true,
-    serverSide: false,
+    serverSide: true,
     ajax: {
         url: "{{ route('templates.list') }}",
         type: 'GET',
-        dataSrc: function (json) {
-            console.log(json.data);
-            return json.data ?? json;
+        data: function (d) {
+            // You can include additional filters here
+            d.category = $('#categoryFilter').val();
+            d.document_type = $('#docTypeFilter').val();
         }
     },
     columns: [
@@ -36,39 +37,30 @@ $(document).ready(function () {
         { title: 'Ref', data: 'ref' },
         { title: 'Name', data: 'name' },
         { title: 'Published', data: '', render: function (data, type, row) {
-            return `<button class="btn btn-sm btn-success" >${row.published ?'Publish':'Un Publish'}</button>`;
+            return `<button class="btn btn-sm btn-success">${row.published ? 'Publish' : 'Un Publish'}</button>`;
         }},
-        {
-          title: 'Type',
-    data: '',
-    render: function(data, type, row) {
-        let icon = '';
-        if (row.document_type === 'pdf') {
-            icon = 'file-pdf-box text-danger';
-        } else if (row.document_type === 'word') {
-            icon = 'file-word-box text-primary';
-        } else {
-            icon = 'file-document-box'; // default
-        }
-        return `<i class="mdi mdi-${icon}" style="font-size: 24px;"></i>`;
-    }
-},
-
+        { title: 'Type', data: '', render: function (data, type, row) {
+            let icon = 'file-document-box';
+            if (row.document_type === 'pdf') icon = 'file-pdf-box text-danger';
+            else if (row.document_type === 'word') icon = 'file-word-box text-primary';
+            return `<i class="mdi mdi-${icon}" style="font-size: 24px;"></i>`;
+        }},
         { title: 'Category', data: '', render: function (data, type, row) {
             return row.category.charAt(0).toUpperCase() + row.category.slice(1);
         }},
         { title: 'Created Date', data: '', render: function (data, type, row) {
-            return moment(row.created_at).format("MMM Do YYYY");;
+            return moment(row.created_at).format("MMM Do YYYY");
         }},
-        { title: 'Actions', data: '', render: function (data, type, row) {
+        { title: 'Actions', data: '', orderable: false, searchable: false, render: function (data, type, row) {
             return `
-                <button class="btn btn-sm btn-success download-btn" onclick="downloadFile(${row?.id})"><i class="mdi mdi-download"></i></button>
-                <button class="btn btn-sm btn-primary edit-btn" onclick="window.location.href='https://qms.lamtans.com/admin/template/${row?.id}'"><i class="mdi mdi-pencil"></i></button>
+                <button class="btn btn-sm btn-success" onclick="downloadFile(${row.id})"><i class="mdi mdi-download"></i></button>
+                <button class="btn btn-sm btn-primary" onclick="window.location.href='https://qms.lamtans.com/admin/template/${row.id}'"><i class="mdi mdi-pencil"></i></button>
                 <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}"><i class="mdi mdi-delete"></i></button>
             `;
-        }, orderable: false, searchable: false }
+        }}
     ]
 });
+
 
 $('#orgForm').on('submit', function (e) {
         e.preventDefault();
