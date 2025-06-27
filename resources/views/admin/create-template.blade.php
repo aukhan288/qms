@@ -11,6 +11,12 @@
     <span class="pageHeading">{{$title??''}}</span>
 </div>
 <div class="card p-3">
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
     <form id="orgForm"
           method="POST"
           action="{{ $template ? route('template.create', $template->id) : route('template.create') }}"
@@ -59,7 +65,11 @@
 
                 </select>
             </div>
-            
+            <div class="col-sm-4 mb-3">
+                <label for="title" class="form-label">Template Title <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="title" name="title" required
+                       value="{{ old('title', $template->title ?? '') }}">
+            </div>
               <div class="col-sm-1 mb-3">
                 <label for="ref" class="form-label">Ref # <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="ref" name="ref" required
@@ -75,6 +85,7 @@
                 <input type="number" class="form-control" id="pages" name="pages" required
                        value="{{ old('pages', $template->pages ?? '') }}">
             </div>
+            
             <div class="col-sm-3 mb-3">
               <label for="revision_date" class="form-label">Revision Date <span class="text-danger">*</span></label>
               <input type="date" class="form-control" id="revision_date" name="revision_date" required

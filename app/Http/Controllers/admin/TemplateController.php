@@ -46,13 +46,13 @@ class TemplateController extends Controller
         // Validation
         $request->validate([
             'name' => 'required|string|max:255',
+            // 'title' => 'required|string|max:255',
             'revision' => 'required|integer',
             'pages' => 'required|integer',
             'revision_date' => 'required|date',
             'ref' => 'required|string|max:100',
             'category' => 'required|string',
             'document_type' => 'required|in:word,pdf',
-            
             'content' => 'nullable|string',
         ]);
 if ($request->hasFile('file')) {
@@ -65,6 +65,7 @@ if ($request->hasFile('file')) {
 
         // Assign common fields
         $template->name = $request->name;
+        $template->title = $request->title;
         $template->user_id = Auth::id();
         $template->revision = $request->revision;
         $template->pages = $request->pages;
@@ -165,6 +166,7 @@ if ($request->hasFile('file')) {
     public function downloadFile(Request $request)
     {
         $template = Template::findOrFail($request->id);
+        
         $imagePath = public_path('storage/' . Auth::user()->profile_pic);
         if (!file_exists($imagePath)) {
             abort(404, 'Profile image not found.');
@@ -247,7 +249,7 @@ if ($request->hasFile('file')) {
 
             <header>
                 <div class="header-left">' . $imageTag . '</div>
-                <div class="header-center">' . $template->ref . ' ' . $template->name . '</div>
+                <div class="header-center">' . $template->title . '</div>
             </header>
 
             <footer>
@@ -329,7 +331,8 @@ foreach ($phpWord->getSections() as $section) {
     $headerTable = $header->addTable($headerTableStyleName);
     $headerTable->addRow();
 
-    $imagePath = public_path('storage/' . Auth::user()->profile_pic);
+    
+    $imagePath = public_path('storage/' . Auth::user()?->profile_pic);
     if (file_exists($imagePath)) {
         $headerTable->addCell(1000, ['valign' => 'center'])->addImage($imagePath, [
             'width' => 80,

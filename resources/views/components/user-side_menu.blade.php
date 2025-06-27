@@ -1,5 +1,6 @@
 @php
     use App\Enums\TemplateCategory;
+    use App\Enums\installerReords;
 @endphp
 <aside class="col-md-3">
         <nav class="bg-dark pt-3">
@@ -28,13 +29,50 @@
                     </i> Installer QMS (v10) <i class="mdi mdi-chevron-down ms-auto"></i>
                 </a>
                 <ul class="collapse list-unstyled ps-4 bg-dark" id="authSubmenu">
-                    @foreach (TemplateCategory::cases() as $category)
+                @foreach (TemplateCategory::cases() as $category)
                         <li class="nav-item py-1">
                             <a class="nav-link text-white" href="{{ url('/documents/' . $category->value) }}">
                                 {{ ucwords($category->value) }}
                             </a>
                         </li>
                     @endforeach
+                </ul>
+            </li>
+               <li class="nav-item py-2 bg-success">
+                <a class="nav-link text-white d-flex align-items-center" data-bs-toggle="collapse" href="#installerSubmenu" role="button" aria-expanded="false" aria-controls="installerSubmenu">
+                    </i> Installer Records <i class="mdi mdi-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled ps-4 bg-dark" id="installerSubmenu">
+                        <li class="nav-item py-1">
+                            <a class="nav-link text-white" href="{{ url('/innstaller-records/projects-folder') }}">
+                                GDR01 Projects Folder
+                            </a>
+                        </li>
+                        <li class="nav-item py-1">
+                            <a class="nav-link text-white" href="{{ url('/innstaller-records/complaints-records') }}">
+                                GDR 06 - Complaints Record
+                            </a>
+                        </li>
+                        <li class="nav-item py-1">
+                            <a class="nav-link text-white" href="{{ url('/innstaller-records/personal-skills') }}">
+                                GDR07 Personal Skills & Training Record
+                            </a>
+                        </li>
+                        <li class="nav-item py-1">
+                            <a class="nav-link text-white" href="{{ url('/innstaller-records/suppliers') }}">
+                                GDR08 Approved Suppliers List
+                            </a>
+                        </li>
+                        <li class="nav-item py-1">
+                            <a class="nav-link text-white" href="{{ url('/innstaller-records/sub-contractors') }}">
+                                GDR09 Approved Subcontractors List
+                            </a>
+                        </li>
+                        <li class="nav-item py-1">
+                            <a class="nav-link text-white" href="{{ url('/innstaller-records/company-documents') }}">
+                                GDR11 Company Documents
+                            </a>
+                        </li>
                 </ul>
             </li>
             </ul>

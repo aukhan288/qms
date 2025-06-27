@@ -10,10 +10,23 @@
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('images/logo.png') }}" />
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/popper.min.js') }}"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script src="{{ asset('js/template.js') }}"></script>
+    <script src="{{ asset('js/common.js') }}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    
+    <!-- End custom js for this page-->
+
+    <!-- <script src="js/jquery.cookie.js" type="text/javascript"></script> -->
 </head>
 <body class="bg-light">
 <div>
@@ -36,16 +49,6 @@
         @yield('page')
     </div>
 
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('js/jquery.min.js') }}"></script>
-    <script src="{{ asset('js/popper.min.js') }}"></script>
-    <script src="{{ asset('js/template.js') }}"></script>
-    <script src="{{ asset('js/common.js') }}"></script>
-    <!-- endinject -->
-    <!-- Custom js for this page-->
     
-    <!-- End custom js for this page-->
-
-    <script src="js/jquery.cookie.js" type="text/javascript"></script>
 </body>
 </html>

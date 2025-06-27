@@ -10,6 +10,7 @@ class Template extends Model
 {
     protected $fillable = [
         'name',
+        'title',
         'published',
         'ref',
         'revision',
