@@ -82,6 +82,13 @@ Route::post('/download-file',[TemplateController::class, 'downloadFile'])->name(
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     // This route is only accessible by authenticated organizations with the 'admin' role
     Route::get('/', [DashboardController::class, 'index']);
+    
+    Route::get('/permissions', [PermissionController::class, 'permissions'])->name('permissions.index');
+    Route::get('/permission/{id?}', [PermissionController::class, 'showPermissionForm'])->name('permissions.form');
+    Route::post('/permissions/{id?}', [PermissionController::class, 'storeOrUpdate'])->name('permissions.save');
+    Route::delete('/permissions/{id}', [PermissionController::class, 'deletePermission'])->name('permissions.delete');
+    
+    
     Route::get('/organizations', [UserController::class, 'index']);
     Route::get('/organizations/list', [UserController::class, 'organizationsList'])->name('organizations.list');
     Route::post('/organizations/store', [UserController::class, 'store'])->name('organizations.store');   

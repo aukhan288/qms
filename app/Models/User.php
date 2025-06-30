@@ -58,5 +58,21 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class);
+    }
+
+    public function hasPermission($permissionName)
+    {
+        // Check direct permission
+        $hasDirect = $this->permissions->contains('name', $permissionName);
+
+        // Check via role
+        $hasViaRole = $this->role && $this->role->permissions->contains('name', $permissionName);
+
+        return $hasDirect || $hasViaRole;
+    }
+
 
 }
