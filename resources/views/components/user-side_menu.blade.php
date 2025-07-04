@@ -49,6 +49,21 @@
                             </a>
                         </li>
                         <li class="nav-item py-1">
+                            <a class="nav-link text-white" href="{{ url('/innstaller-records/corrective-preventive-actions') }}">
+                                GDR02 Corrective & Preventive Action Record
+                            </a>
+                        </li>
+                        <li class="nav-item py-1">
+                            <a class="nav-link text-white" href="{{ url('/innstaller-records/tool-calibrations') }}">
+                                GDR04 Tool Calibration, Checking & Servicing Record
+                            </a>
+                        </li>
+                        <li class="nav-item py-1">
+                            <a class="nav-link text-white" href="{{ url('/innstaller-records/installation-audit-records') }}">
+                                GDR05 Installation Audit Record
+                            </a>
+                        </li>
+                        <li class="nav-item py-1">
                             <a class="nav-link text-white" href="{{ url('/innstaller-records/complaints-records') }}">
                                 GDR 06 - Complaints Record
                             </a>

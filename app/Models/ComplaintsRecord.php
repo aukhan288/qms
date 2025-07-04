@@ -34,5 +34,10 @@ class ComplaintsRecord extends Model
         'file_name',
         'validator_position'
     ];
+
+
+    public function files(){
+        return $this->hasMany(ComplaintDocument::class,'complaint_record_id','id');
+    }
         
 }

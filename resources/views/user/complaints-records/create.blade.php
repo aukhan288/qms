@@ -18,7 +18,7 @@
                         <strong>{{ isset($complaintsRecord) ? 'Update' : 'Save' }}</strong>
                     </button>
                     @if (isset($complaintsRecord))
-                    <button type="submit" class="p-2">
+                    <button type="button" onclick="window.location.href='{{ route('complaints-documents', $complaintsRecord->id) }}'" complaints-documents class="p-2">
                         <strong>Uploads</strong>
                     </button>
                     @endif

@@ -7,7 +7,11 @@ use App\Models\CompanyDocument;
 use App\Models\CompanyDocumentFile;
 use App\Models\Competence;
 use App\Models\competencies;
+use App\Models\ComplaintDocument;
 use App\Models\ComplaintsRecord;
+use App\Models\CorrectivePreventive;
+use App\Models\InstallationAuditRecord;
+use App\Models\InstallationAuditRecordDocument;
 use App\Models\PersonalSkillsAndTraining;
 use App\Models\ProjectMeasures;
 use App\Models\ProjectsFolder;
@@ -15,6 +19,8 @@ use App\Models\SkillsCourse;
 use App\Models\Subcontractor;
 use App\Models\SubcontractorDocument;
 use App\Models\Supplier;
+use App\Models\ToolCalibration;
+use App\Models\ToolCalibrationDocument;
 use Faker\Provider\ar_EG\Person;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -350,6 +356,7 @@ public function uploadSubcontractorDocument(Request $request, $subcontractorId)
         ->back()
         ->with('success', $message);
     }
+
     
     public function destroySubcontractorFile($id)
     {
@@ -372,6 +379,261 @@ public function downloadSubcontractorDocument($documentId, $fileId)
     ->download($file->path, $file->filename);
     
 }
+
+public function correctivePreventiveActions()
+{
+    $correctivePreventiveActions = CorrectivePreventive::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+    return view('user.corrective-preventive-actions.list', compact('correctivePreventiveActions'));
+}
+public function showcorrectivePreventiveForm($id = null)
+{
+    
+    $correctivePreventiveAction = $id ? CorrectivePreventive::findOrFail($id) : null;
+    $title = 'Corrective & Preventive Action Record';
+    return view('user.corrective-preventive-actions.create', compact('toolCalibration', 'title'));
+}
+ 
+
+public function toolCalibrations()
+{
+    $toolCalibrations = ToolCalibration::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+    return view('user.tool-calibrations.list', compact('toolCalibrations'));
+}
+
+public function showToolCalibrationForm($id = null)
+{
+    
+    $toolCalibration = $id ? ToolCalibration::findOrFail($id) : null;
+    $title = 'GDR 04 - Tool Calibration, Checking & Servicing Record';
+    return view('user.tool-calibrations.create', compact('toolCalibration', 'title'));
+}
+
+
+public function saveToolCalibration(Request $request, $id = null)
+{
+    
+    // Step 1: Validate the request
+    $validated = $request->validate([
+        'item_of_equipment' => 'required|string',
+        'serial_number' => 'required|string',
+        'calibration_checking_requirements' => 'required|string',
+        'measurement_ref_standard' => 'required|string',
+        'date_purchased' => 'required|date',
+        'date_calibrated' => 'required|date',
+        'next_calibration_date' => 'required|date',
+        'out_of_spec_reading_at_calibration' => 'required|string',
+        'description' => 'required|string',
+    ]);
+
+    
+
+    $validated['user_id'] = Auth::id();
+
+    $tc = [
+        'user_id' => Auth::id(),
+        'item_of_equipment' => $request->item_of_equipment,
+        'serial_number' => $request->serial_number,
+        'description' => $request->description,
+        'calibration_checking_requirements' => $request->calibration_checking_requirements,
+        'measurement_ref_standard' => $request->measurement_ref_standard,
+        'date_purchased' => $request->date_purchased,
+        'date_calibrated' => $request->date_calibrated,
+        'next_calibration_date' => $request->next_calibration_date,
+        'out_of_spec_reading_at_calibration' => $request->out_of_spec_reading_at_calibration,
+    ];
+    
+    
+    
+    $toolCalibration = $id ? ToolCalibration::findOrFail($id) : null;
+    if ($id) {
+        $toolCalibration->update($tc);
+        $message = 'Tool updated successfully.';
+    } else {
+        $toolCalibration = ToolCalibration::create($tc);
+        $message = 'Tool created successfully.';
+    }
+
+    session()->flash('success', $message);
+
+    $title = 'GDR 04 - Tool Calibration, Checking & Servicing Record';
+
+    return redirect()
+    ->route('tool-calibration.form', $toolCalibration->id ?? null)
+    ->with('success', $message);
+
+}
+
+public function destroyToolCalibration($id)
+{
+    $toolCalibration = ToolCalibration::findOrFail($id);
+    $toolCalibration->delete();
+    
+    return redirect()
+        ->back()
+        ->with('success', 'Tool deleted successfully!');
+    }
+
+ public function showToolCalibrationDocuments(Request $request, $id)
+    {
+        $toolCalibration = ToolCalibration::with('files')->findOrFail($id);
+        
+        return view('user.tool-calibrations.documents',compact('toolCalibration'));
+    }
+
+
+
+public function uploadToolCalibrationDocument(Request $request, $id)
+    {
+        $toolCalibration = ToolCalibration::findOrFail($id);
+        $uploaded = $request->file('file');
+        // 4) Build a unique filename
+        $name      = pathinfo($uploaded->getClientOriginalName(), PATHINFO_FILENAME);
+        $ext       = $uploaded->getClientOriginalExtension();
+        $filename  = "{$toolCalibration->id}_" . time() . "_" . Str::slug($name) . ".{$ext}";
+
+        // 5) Store it on the public disk
+        $path = $uploaded->storeAs(Auth::user()->org.'/tool_calibrations', $filename, 'public');
+        // 6) Prepare metadata
+        $data = [
+            'tool_calibration_id' => $toolCalibration->id,
+            'filename'            => $uploaded->getClientOriginalName(),
+            'path'                => $path,
+            'mime_type'           => $uploaded->getClientMimeType(),
+            'size'                => $uploaded->getSize(),
+        ];
+        
+        
+        // 7b) Create new record
+        ToolCalibrationDocument::create($data);
+        $message = 'File uploaded successfully!';
+
+        // 8) Redirect back
+        return redirect()
+        ->back()
+        ->with('success', $message);
+    }
+    
+    public function toolCalibrationDocumentDestroy($toolCalibrationId,$documentId)
+    {
+        $toolCalibration = ToolCalibration::where('user_id', Auth::id())->where('id', $toolCalibrationId)->firstOrFail();
+        if (!$toolCalibration) {
+            return redirect()
+            ->back();
+        }
+        $document = ToolCalibrationDocument::findOrFail($documentId);
+        $document->delete();
+        
+        return redirect()
+            ->back()
+            ->with('success', 'Document deleted successfully!');
+    }
+
+
+
+public function installationAuditRecords()
+{
+    $installationAuditRecords = InstallationAuditRecord::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+    return view('user.installation-audit.list', compact('installationAuditRecords'));
+}
+
+public function showInstallationAuditForm($id = null)
+{
+    
+    $auditRecord = $id ? InstallationAuditRecord::with( 'measure')->findOrFail($id) : null;
+    $title = 'GDR 05 - Installation Audit Record';
+    $measures = ProjectMeasures::get(['id','name']);
+    return view('user.installation-audit.create', compact('auditRecord', 'title','measures'));
+}
+
+
+public function saveInstallationAudit(Request $request, $id = null)
+{
+    // Step 1: Validate the request
+    $validated = $request->validate([
+        'audit_date' => 'required|date',
+        'completed_date' => 'required|date',
+        'installation_reference_number' => 'required|string|max:255',
+        'installation_date' => 'required|date',
+        'installation_type' => 'required',
+        'transferred_to_GDR_02' => 'required|in:Yes,No',
+        'supervisor' => 'required|string|max:255',
+        'auditor' => 'required|string|max:255',
+        'project_folder_comments' => 'required|string',
+        'summary' => 'required|string',
+        'corrective_preventive_actions' => 'required|string',
+    ]);
+
+    $validated['user_id'] = Auth::id();
+
+    if ($id) {
+        $auditRecord = InstallationAuditRecord::with('measure')->findOrFail($id);
+        $auditRecord->update($validated);
+        $message = 'Installation Audit Record updated successfully.';
+    } else {
+        $auditRecord = InstallationAuditRecord::create($validated);
+        $message = 'Installation Audit Record created successfully.';
+    }
+
+    session()->flash('success', $message);
+
+    $title = 'GDR 05 - Installation Audit Record';
+    $measures = ProjectMeasures::get(['id', 'name']);
+
+    return view('user.installation-audit.create', compact('auditRecord', 'title', 'measures'));
+}
+
+
+public function destroyInstallationAudit($id)
+{
+    $installationAudit = InstallationAuditRecord::findOrFail($id);
+    $installationAudit->delete();
+    
+    return redirect()
+        ->back()
+        ->with('success', 'Personal Skills deleted successfully!');
+    }
+
+ public function showInstallationAuditDocuments(Request $request, $id)
+    {
+        $installationAuditRecord = InstallationAuditRecord::with('files')->findOrFail($id);
+        
+        return view('user.installation-audit.documents',compact('installationAuditRecord'));
+    }
+
+
+     public function uploadInstallationAuditDocument(Request $request, $id)
+    {
+        $installationAuditRecord = InstallationAuditRecord::findOrFail($id);
+        $uploaded = $request->file('file');
+        // 4) Build a unique filename
+        $name      = pathinfo($uploaded->getClientOriginalName(), PATHINFO_FILENAME);
+        $ext       = $uploaded->getClientOriginalExtension();
+        $filename  = "{$installationAuditRecord->id}_" . time() . "_" . Str::slug($name) . ".{$ext}";
+
+        // 5) Store it on the public disk
+        $path = $uploaded->storeAs(Auth::user()->org.'/installation_audit_record', $filename, 'public');
+        // 6) Prepare metadata
+        $data = [
+            'installation_audit_id' => $installationAuditRecord->id,
+            'filename'            => $uploaded->getClientOriginalName(),
+            'path'                => $path,
+            'mime_type'           => $uploaded->getClientMimeType(),
+            'size'                => $uploaded->getSize(),
+        ];
+        
+        
+        // 7b) Create new record
+        InstallationAuditRecordDocument::create($data);
+        $message = 'File uploaded successfully!';
+
+        // 8) Redirect back
+        return redirect()
+        ->back()
+        ->with('success', $message);
+    }
+     
+
+
 
 public function complaintsRecords()
 {
@@ -407,6 +669,7 @@ public function showComplaintsRecordForm($id = null)
     }
     return view('user.complaints-records.create', compact('complaintsRecord', 'title', 'projects'));
 }
+
 
 
 public function complaintsRecordStore(Request $request, $id = null)
@@ -504,6 +767,77 @@ public function complaintsRecordDestroy($id)
         ->with('success', 'Complaints Record deleted successfully!');
     }
 
+    public function showComplaintsDocumentsForm($id = null)
+    {
+        $complaintsRecord = $id ? ComplaintsRecord::with('files')->findOrFail($id) : null;
+        $title = 'GDR06 - Complaints Record';        
+        return view('user.complaints-records.documents', compact('complaintsRecord', 'title'));
+    }
+    public function uploadComplaintsDocument(Request $request, $id)
+    {
+        $complaintsRecord = ComplaintsRecord::findOrFail($id);
+        $uploaded = $request->file('file');
+        // 4) Build a unique filename
+        $name      = pathinfo($uploaded->getClientOriginalName(), PATHINFO_FILENAME);
+        $ext       = $uploaded->getClientOriginalExtension();
+        $filename  = "{$complaintsRecord->id}_" . time() . "_" . Str::slug($name) . ".{$ext}";
+
+        // 5) Store it on the public disk
+        $path = $uploaded->storeAs(Auth::user()->org.'/complaint_documents', $filename, 'public');
+        // 6) Prepare metadata
+        $data = [
+            'complaint_record_id' => $complaintsRecord->id,
+            'filename'            => $uploaded->getClientOriginalName(),
+            'path'                => $path,
+            'mime_type'           => $uploaded->getClientMimeType(),
+            'size'                => $uploaded->getSize(),
+        ];
+        
+        
+        // 7b) Create new record
+        ComplaintDocument::create($data);
+        $message = 'File uploaded successfully!';
+
+        // 8) Redirect back
+        return redirect()
+        ->back()
+        ->with('success', $message);
+    }
+   
+    public function installationAuditDocumentDestroy($complaintId,$documentId)
+    {
+        $InstallationAuditRecord = InstallationAuditRecord::where('user_id', Auth::id())->where('id', $complaintId)->firstOrFail();
+        if (!$InstallationAuditRecord) {
+            return redirect()
+            ->back();
+        }
+        $document = InstallationAuditRecordDocument::findOrFail($documentId);
+        $document->delete();
+        
+        return redirect()
+            ->back()
+            ->with('success', 'Document deleted successfully!');
+    }
+    
+    
+   
+
+    public function complaintDocumentDestroy($complaintId, $documentId)
+    {
+        $complaint = ComplaintsRecord::where('user_id', Auth::id())->where('id', $complaintId)->firstOrFail();
+        if (!$complaint) {
+            return redirect()
+            ->back();
+        }
+        $document = ComplaintDocument::findOrFail($documentId);
+        $document->delete();
+        
+        return redirect()
+            ->back()
+            ->with('success', 'Document deleted successfully!');
+    }
+    
+
 public function personalSkills()
 {
     $personalSkills = PersonalSkillsAndTraining::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
@@ -517,6 +851,7 @@ public function showPersonalSkillsForm($id = null)
     $title = 'GDR 12 - Personal Skills';
     return view('user.personal-skills.create', compact('personalSkill', 'title'));
 }
+
 
 public function savePersonalSkills(Request $request, $id = null)
 {
@@ -565,6 +900,7 @@ public function savePersonalSkills(Request $request, $id = null)
     ]);
 }
 
+
 public function destroyPersonalSkills($id)
 {
     $personalSkill = PersonalSkillsAndTraining::findOrFail($id);
@@ -578,6 +914,7 @@ public function destroyPersonalSkills($id)
         ->back()
         ->with('success', 'Personal Skills deleted successfully!');
     }
+
     public function destroySkillsCourse($skillId, $courseId)
     {
         
@@ -609,6 +946,7 @@ public function destroyPersonalSkills($id)
         ->back()
         ->with('success', 'Competence deleted successfully!');
 } 
+    
 
 public function suppliers()
 {

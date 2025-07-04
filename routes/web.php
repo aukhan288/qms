@@ -57,16 +57,41 @@ Route::prefix('innstaller-records')->group(function () {
     Route::delete('/skills-competence/{skillId}/{competenceId}', [InstallerRecordsController::class, 'destroySkillsCompetence'])->name('skills-competence.destroy');
     // pe
     
+    Route::get('/corrective-preventive-actions', [InstallerRecordsController::class, 'correctivePreventiveActions'])->name('corrective-preventive-actions');
+    
+    
+    Route::get('/tool-calibrations', [InstallerRecordsController::class, 'toolCalibrations'])->name('tool-calibrations');
+    Route::get('/tool-calibration/{id?}', [InstallerRecordsController::class, 'showToolCalibrationForm'])->name('tool-calibration.form');
+    Route::post('/tool-calibration/{id?}', [InstallerRecordsController::class, 'saveToolCalibration'])->name('tool-calibration.store');
+    Route::delete('/tool-calibration/{id}', [InstallerRecordsController::class, 'destroyToolCalibration'])->name('tool-calibration.destroy');
+    Route::get('/tool-calibration-documents/{id}', [InstallerRecordsController::class, 'showToolCalibrationDocuments'])->name('tool-calibration-documents');
+    Route::delete('/tool-calibration-document/{toolCalibrationId}/{documentId}', [InstallerRecordsController::class, 'toolCalibrationDocumentDestroy'])->name('tool-calibration-document.destroy');
+    Route::post('/upload-tool-calibration-document/{id}', [InstallerRecordsController::class, 'uploadToolCalibrationDocument'])->name('upload-tool-calibration-document');
+    Route::delete('/delete-tool-calibration-document/{toolCalibrationId}/{documentId}', [InstallerRecordsController::class, 'toolCalibrationDocumentDestroy'])->name('tool-calibration-document.destroy');
+    
+    
+    Route::get('/installation-audit-records', [InstallerRecordsController::class, 'installationAuditRecords'])->name('installation-audit-records');
+    Route::get('/installation-audit/{id?}', [InstallerRecordsController::class, 'showInstallationAuditForm'])->name('installation-audit.form');
+    Route::post('/installation-audit/{id?}', [InstallerRecordsController::class, 'saveInstallationAudit'])->name('installation-audit.form.store');
+    Route::delete('/installation-audit/{id}', [InstallerRecordsController::class, 'destroyInstallationAudit'])->name('installation-audit.destroy');
+    Route::get('/installation-audit-documents/{id}', [InstallerRecordsController::class, 'showInstallationAuditDocuments'])->name('installation-audit-documents');
+    Route::post('/upload-installation-audit-document/{id}', [InstallerRecordsController::class, 'uploadInstallationAuditDocument'])->name('upload-installation-audit-document');
+    Route::delete('/delete-installation-audit-document/{installationAuditId}/{documentId}', [InstallerRecordsController::class, 'installationAuditDocumentDestroy'])->name('installation-audit-document.destroy');
+  
+    
     Route::get('/complaints-records', [InstallerRecordsController::class, 'complaintsRecords'])->name('complaints-records');
     Route::get('/complaints-record/{id?}', [InstallerRecordsController::class, 'showComplaintsRecordForm'])->name('complaints-record.form');
     Route::post('/complaints-record/{id?}', [InstallerRecordsController::class, 'complaintsRecordStore'])->name('complaints-record.store');
     Route::delete('/complaints-record/{id}', [InstallerRecordsController::class, 'complaintsRecordDestroy'])->name('complaints-record.destroy');
-
+    Route::get('/complaints-documents/{id}', [InstallerRecordsController::class, 'showComplaintsDocumentsForm'])->name('complaints-documents');
+    Route::post('/upload-complaints-document/{id}', [InstallerRecordsController::class, 'uploadComplaintsDocument'])->name('upload-complaints-document');
+    Route::delete('/delete-complaints-document/{complaintId}/{documentId}', [InstallerRecordsController::class, 'complaintDocumentDestroy'])->name('complaint-document.destroy');
+    
     Route::get('/suppliers', [InstallerRecordsController::class, 'suppliers'])->name('suppliers');
     Route::get('/supplier/{id?}', [InstallerRecordsController::class, 'showSupplierForm'])->name('supplier.form');
     Route::post('/supplier/{id?}', [InstallerRecordsController::class, 'saveSupplier'])->name('suppliers.store');
     Route::delete('/supplier/{id}', [InstallerRecordsController::class, 'destroySupplier'])->name('supplier.destroy');
-
+    
     Route::get('/projects-folder', [InstallerRecordsController::class, 'projectsFolder'])->name('projects-folder');
     Route::get('/project-folder/{id?}', [InstallerRecordsController::class, 'showprojectsFolderForm'])->name('projects-folder.form');
     Route::post('/projects-folder/{id?}', [InstallerRecordsController::class, 'storeOrUpdate'])->name('projects-folder.save');

@@ -28,7 +28,7 @@
 
     <!-- <script src="js/jquery.cookie.js" type="text/javascript"></script> -->
 </head>
-<body class="bg-light">
+<body class="bg-white">
 <div>
 <nav
             class="navbar navbar-expand-sm navbar-dark bg-dark "
