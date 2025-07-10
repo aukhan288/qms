@@ -39,5 +39,9 @@ class ComplaintsRecord extends Model
     public function files(){
         return $this->hasMany(ComplaintDocument::class,'complaint_record_id','id');
     }
+   public function measure()
+{
+    return $this->belongsTo(ProjectMeasures::class, 'measure_id');
+}
         
 }

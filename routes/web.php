@@ -58,6 +58,12 @@ Route::prefix('innstaller-records')->group(function () {
     // pe
     
     Route::get('/corrective-preventive-actions', [InstallerRecordsController::class, 'correctivePreventiveActions'])->name('corrective-preventive-actions');
+    Route::get('/corrective-preventive/{id?}', [InstallerRecordsController::class, 'showcorrectivePreventiveForm'])->name('corrective-preventive.form');
+    Route::post('/corrective-preventive/{id?}', [InstallerRecordsController::class, 'saveCorrectivePreventive'])->name('corrective-preventive.store');
+    Route::delete('/delete-corrective-preventive/{id}', [InstallerRecordsController::class, 'destroyCorrectivePreventive'])->name('corrective-preventive.destroy');
+    Route::get('/corrective-preventive-documents/{id}', [InstallerRecordsController::class, 'showCorrectivePreventiveDocuments'])->name('corrective-preventive-documents');
+    Route::post('/upload-corrective-preventive-document/{id}', [InstallerRecordsController::class, 'uploadCorrectivePreventiveDocument'])->name('upload-corrective-preventive-document');
+    Route::delete('/delete-corrective-preventive-document/{recordId}/{documentId}', [InstallerRecordsController::class, 'correctivePreventiveDocumentDestroy'])->name('corrective-preventive-document.destroy');
     
     
     Route::get('/tool-calibrations', [InstallerRecordsController::class, 'toolCalibrations'])->name('tool-calibrations');
@@ -65,7 +71,6 @@ Route::prefix('innstaller-records')->group(function () {
     Route::post('/tool-calibration/{id?}', [InstallerRecordsController::class, 'saveToolCalibration'])->name('tool-calibration.store');
     Route::delete('/tool-calibration/{id}', [InstallerRecordsController::class, 'destroyToolCalibration'])->name('tool-calibration.destroy');
     Route::get('/tool-calibration-documents/{id}', [InstallerRecordsController::class, 'showToolCalibrationDocuments'])->name('tool-calibration-documents');
-    Route::delete('/tool-calibration-document/{toolCalibrationId}/{documentId}', [InstallerRecordsController::class, 'toolCalibrationDocumentDestroy'])->name('tool-calibration-document.destroy');
     Route::post('/upload-tool-calibration-document/{id}', [InstallerRecordsController::class, 'uploadToolCalibrationDocument'])->name('upload-tool-calibration-document');
     Route::delete('/delete-tool-calibration-document/{toolCalibrationId}/{documentId}', [InstallerRecordsController::class, 'toolCalibrationDocumentDestroy'])->name('tool-calibration-document.destroy');
     
@@ -96,6 +101,10 @@ Route::prefix('innstaller-records')->group(function () {
     Route::get('/project-folder/{id?}', [InstallerRecordsController::class, 'showprojectsFolderForm'])->name('projects-folder.form');
     Route::post('/projects-folder/{id?}', [InstallerRecordsController::class, 'storeOrUpdate'])->name('projects-folder.save');
     Route::delete('/projects-folder/{id}', [InstallerRecordsController::class, 'destroyProject'])->name('projects-folder.destroy');
+    Route::post('/project-operative/{id?}', [InstallerRecordsController::class, 'saveProjectsOperative'])->name('project-operative.save');
+    Route::delete('/projects-operative/{id}', [InstallerRecordsController::class, 'destroyProjectOperative'])->name('projects-operative.destroy');
+    Route::post('/project-upload/{id?}', [InstallerRecordsController::class, 'saveProjectUpload'])->name('project-upload.save');
+    Route::delete('/project.upload/{id}', [InstallerRecordsController::class, 'destroyProjectUpload'])->name('project.upload.destroy');
 });
 
 

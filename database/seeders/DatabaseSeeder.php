@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             // RoleSeeder::class,
             // AdminSeeder::class,
             // ProjectMeasuresTableSeeder::class,
-            PermissionSeeder::class,
+            // PermissionSeeder::class,
         ]);
     }
 }

@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('complaint_documents', function (Blueprint $table) {
+        Schema::create('corrective_preventive_documents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('complaint_record_id')->constrained('complaints_records')->onDelete('cascade');
+            $table->foreignId('corrective_preventive_id')->constrained('corrective_preventive_actions')->onDelete('cascade');
             $table->string('filename');
             $table->string('path');
             $table->string('mime_type')->nullable();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('complaint_documents');
+        Schema::dropIfExists('corrective_preventive_documents');
     }
 };

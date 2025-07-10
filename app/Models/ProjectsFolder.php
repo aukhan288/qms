@@ -36,5 +36,19 @@ class ProjectsFolder extends Model
     public function measures_to_be_installed() {
          return ProjectMeasures::whereIn('id', $this->measures_to_be_installed ?? [])->get();
     }
+    public function complaints_records() {
+         return $this->hasMany(ComplaintsRecord::class, 'projects_folders_id', 'id');
+    }
+    
+   public function operatives()
+{
+    return $this->belongsToMany(
+        \App\Models\PersonalSkillsAndTraining::class,
+        'project_operatives',
+        'project_id',
+        'operative_id'
+    )->withPivot('project_measure_id')->withTimestamps();
+}
+
    
 }

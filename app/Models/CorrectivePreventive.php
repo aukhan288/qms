@@ -10,16 +10,22 @@ class CorrectivePreventive extends Model
     protected $fillable = [
         'user_id',
         'date',
+        'ncr_no',
         'measure_id',
         'source',
-        'type',
+        'preventive_or_Corrective',
         'issued_to',
         'no_of_days',
         'date_closed',
+        'closed_by',
         'status',
         'details_of_issue',
         'summary_of_action_taken',
         'root_cause',
         'prevent_recurrence'
     ];
+
+    public function files(){
+        return $this->hasMany(CorrectivePreventiveDocument::class,'corrective_preventive_id','id');
+    }
 }

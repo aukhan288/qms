@@ -21,4 +21,6 @@ class PersonalSkillsAndTraining extends Model
     {
         return $this->hasMany(SkillsCourse::class, 'skill_id', 'id');
     }
+
+  
 }

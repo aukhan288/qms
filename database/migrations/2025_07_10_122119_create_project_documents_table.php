@@ -11,15 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('complaint_documents', function (Blueprint $table) {
+            Schema::create('project_documents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('complaint_record_id')->constrained('complaints_records')->onDelete('cascade');
+
+            $table->foreignId('project_folder_id')->constrained('projects_folders')->onDelete('cascade');
+
+            // Add this line for measure reference
+            $table->unsignedBigInteger('upload_measure');
+
             $table->string('filename');
             $table->string('path');
             $table->string('mime_type')->nullable();
             $table->unsignedBigInteger('size')->nullable();
+
             $table->timestamps();
+
+            // Optional foreign key if you want to link to `project_measures`
+            $table->foreign('upload_measure')->references('id')->on('project_measures')->onDelete('set null');
         });
+
     }
 
     /**
@@ -27,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('complaint_documents');
+        Schema::dropIfExists('project_documents');
     }
 };

@@ -13,25 +13,20 @@ return new class extends Migration
     {
         Schema::create('corrective_preventive_actions', function (Blueprint $table) {
             $table->id();
-             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->date('date')->nullable(); // Date of issue
-            $table->string('ncr_no')->nullable(); // NCR Number (if applicable)
-
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->date('date')->nullable();
+            $table->string('ncr_no')->nullable();
             $table->string('source')->nullable();
-
-            $table->enum('type', ['corrective', 'preventive']); // Preventive or Corrective
-
+            $table->enum('preventive_or_Corrective', ['corrective', 'preventive']);
             $table->string('issued_to')->nullable();
             $table->integer('no_of_days')->nullable();
             $table->date('date_closed')->nullable();
-
-            $table->enum('status', ['open', 'closed'])->default('open'); // Status (Open/Closed)
+            $table->enum('status', ['open', 'closed'])->default('open');
             $table->string('closed_by')->nullable();
-
             $table->text('details_of_issue')->nullable();
             $table->text('summary_of_action_taken')->nullable();
             $table->text('root_cause')->nullable();
-            $table->text('prevent_recurrence')->nullable(); // What can be done to prevent a recurrence?
+            $table->text('prevent_recurrence')->nullable();
             $table->timestamps();
         });
     }

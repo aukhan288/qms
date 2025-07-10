@@ -10,9 +10,11 @@ use App\Models\competencies;
 use App\Models\ComplaintDocument;
 use App\Models\ComplaintsRecord;
 use App\Models\CorrectivePreventive;
+use App\Models\CorrectivePreventiveDocument;
 use App\Models\InstallationAuditRecord;
 use App\Models\InstallationAuditRecordDocument;
 use App\Models\PersonalSkillsAndTraining;
+use App\Models\ProjectDocument;
 use App\Models\ProjectMeasures;
 use App\Models\ProjectsFolder;
 use App\Models\SkillsCourse;
@@ -21,6 +23,7 @@ use App\Models\SubcontractorDocument;
 use App\Models\Supplier;
 use App\Models\ToolCalibration;
 use App\Models\ToolCalibrationDocument;
+use Carbon\Carbon;
 use Faker\Provider\ar_EG\Person;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -36,20 +39,43 @@ class InstallerRecordsController extends Controller
         return view('user.projects-folder.list',compact('projectsFolder','projectMeasures'));
     }
 
-     public function showprojectsFolderForm($id = null)
-    {
-     
-        $project = null;
-        $projectMeasures = DB::table('project_measures')->get(['id', 'name']);
-        if ($id) {
-            $project = ProjectsFolder::findOrFail($id);
-        }
-        $title = 'Project Information';
-        return view('user.projects-folder.create', compact('project','title','projectMeasures'));
+  public function showprojectsFolderForm($id = null)
+{
+    $project = null;
+    $projectOperatives = collect(); // default empty collection
+
+    // Get dropdown data
+    $projectMeasures = DB::table('project_measures')->get(['id', 'name']);
+    $operatives = PersonalSkillsAndTraining::get(['id', 'employee_name']);
+    $projectUploads = ProjectDocument::with('measure')->get();
+
+    if ($id) {
+        $project = ProjectsFolder::with([
+            'complaints_records.measure',
+            'complaints_records.files',
+            'operatives.competencies',  // 👈 only assigned operatives with relationships
+            'operatives.courses',
+        ])->findOrFail($id);
+
+        $projectOperatives = $project->operatives;
     }
+
+    $title = 'Project Information';
+
+    return view('user.projects-folder.create', compact(
+        'project',
+        'title',
+        'projectMeasures',
+        'operatives',
+        'projectOperatives',
+        'projectUploads'
+    ));
+}
+
 
  public function storeOrUpdate(Request $request, $id = null)
 {
+    
     $validated = $request->validate([
         'project_reference' => 'nullable|string|max:255',
         'customer_name' => 'nullable|string|max:255',
@@ -81,6 +107,7 @@ class InstallerRecordsController extends Controller
     if ($id) {
         $project = ProjectsFolder::findOrFail($id);
         $project->update($data);
+        $project->refresh();
         return view('user.projects-folder.create', [
         'title' => 'Edit Project',
         'project' => $project,
@@ -118,7 +145,89 @@ public function destroyProject($id)
     }
 
 
+ public function saveProjectsOperative(Request $request, $id)
+{
+    // 1. Validate the request
+    $request->validate([
+        'operative' => 'required|exists:personal_skills_and_training,id',
+        'project_measure' => 'required|exists:project_measures,id',
+    ]);
 
+    // 2. Find the project
+    $project = ProjectsFolder::findOrFail($id);
+
+    // 3. Check if already assigned
+    $alreadyAssigned = $project->operatives()
+        ->wherePivot('operative_id', $request->operative)
+        ->wherePivot('project_measure_id', $request->project_measure)
+        ->exists();
+
+    if ($alreadyAssigned) {
+        return redirect()->back()->with('error', 'Operative is already assigned to this project with the selected measure.');
+    }
+
+    // 4. Attach the operative to the project with the measure
+    $project->operatives()->attach($request->operative, [
+        'project_measure_id' => $request->project_measure
+    ]);
+
+    return redirect()->back()->with('success', 'Operative assigned to the project successfully.');
+}
+public function destroyProjectOperative($id)
+    {
+
+       DB::table('project_operatives')->where('id', $id)->delete();
+
+    return redirect()->back()->with('success', 'Operative unassigned from project successfully!');
+    }
+
+
+    public function saveProjectUpload(Request $request, $id)
+{
+    $request->validate([
+        'upload_measure' => 'required|exists:project_measures,id',
+        'upload_file' => 'required|file|max:10240', // max 10MB
+    ]);
+
+    // Handle file upload
+    if ($request->hasFile('upload_file')) {
+        $file = $request->file('upload_file');
+
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('project_uploads/' . $id, $filename, 'public');
+
+        // Save in DB
+        ProjectDocument::create([
+            'project_folder_id' => $id,
+            'filename' => $file->getClientOriginalName(),
+            'upload_measure' => $request->upload_measure,
+            'path' => $path,
+            'mime_type' => $file->getClientMimeType(),
+            'size' => $file->getSize(),
+        ]);
+
+        return redirect()->back()->with('success', 'Document uploaded successfully!');
+    }
+
+    return redirect()->back()->with('error', 'No file uploaded.');
+}
+
+   public function destroyProjectUpload($id)
+{
+    // 1. Find the document or fail
+    $document = ProjectDocument::findOrFail($id);
+
+    // 2. Delete the physical file from storage
+    if (Storage::disk('public')->exists($document->path)) {
+        Storage::disk('public')->delete($document->path);
+    }
+
+    // 3. Delete the record from the database
+    $document->delete();
+
+    // 4. Redirect back with success message
+    return redirect()->back()->with('success', 'Project document deleted successfully.');
+}
 
     public function companyDocuments()
     {
@@ -390,14 +499,127 @@ public function showcorrectivePreventiveForm($id = null)
     
     $correctivePreventiveAction = $id ? CorrectivePreventive::findOrFail($id) : null;
     $title = 'Corrective & Preventive Action Record';
-    return view('user.corrective-preventive-actions.create', compact('toolCalibration', 'title'));
+    return view('user.corrective-preventive-actions.create', compact('correctivePreventiveAction', 'title'));
 }
+public function saveCorrectivePreventive(Request $request, $id = null)
+{
+    // Step 1: Validate the request
+    $validated = $request->validate([
+        'date' => 'required|date',
+        'ncr_no' => 'required|string|max:255',
+        'source' => 'required|string|max:255',
+        'preventive_or_Corrective' => 'required|string',
+        'issued_to' => 'required|string|max:255',
+        'no_of_days' => 'required|integer',
+        'status' => 'required|in:open,closed',
+        'closed_date' => 'required|date',
+        'closed_by' => 'required|string|max:255',
+        'details_of_issue' => 'required|string',
+        'summary_of_action_taken' => 'required|string',
+        'root_cause' => 'required|string',
+        'prevent_recurrence' => 'required|string',
+    ]);
+
+    $data = [
+        'date' => $validated['date'],
+        'ncr_no' => $validated['ncr_no'],
+        'source' => $validated['source'],
+        'preventive_or_Corrective' => $validated['preventive_or_Corrective'],
+        'issued_to' => $validated['issued_to'],
+        'no_of_days' => $validated['no_of_days'],
+        'status' => $validated['status'],
+        'date_closed' => $validated['closed_date'],
+        'closed_by' => $validated['closed_by'],
+        'details_of_issue' => $validated['details_of_issue'],
+        'summary_of_action_taken' => $validated['summary_of_action_taken'],
+        'root_cause' => $validated['root_cause'],
+        'prevent_recurrence' => $validated['prevent_recurrence'],
+
+    ];
+    $data['user_id'] = Auth::id();
+    $correctivePreventive = $id ? CorrectivePreventive::findOrFail($id) : null;
+    if ($id) {
+        $correctivePreventive->update($data);
+        $message = 'Corrective/Preventive Action updated successfully.';
+    } else {
+        $correctivePreventive = CorrectivePreventive::create($data);
+        $message = 'Corrective/Preventive Action created successfully.';
+    }
+    session()->flash('success', $message);
+    $title = 'Corrective & Preventive Action Record';
+    return redirect()
+        ->route('corrective-preventive.form', $correctivePreventive->id ?? null)
+        ->with('success', $message);
+    
+}
+public function destroyCorrectivePreventive($id)
+{
+    $correctivePreventive = CorrectivePreventive::findOrFail($id);
+    $correctivePreventive->delete();
+    
+    return redirect()
+        ->back()
+        ->with('success', 'Corrective/Preventive Action deleted successfully!');
+}
+
+ public function showCorrectivePreventiveDocuments(Request $request, $id)
+    {
+        $correctivePreventiveDocument = CorrectivePreventive::with('files')->findOrFail($id);
+        
+        return view('user.corrective-preventive-actions.documents',compact('correctivePreventiveDocument'));
+    }
+ 
+    public function uploadCorrectivePreventiveDocument(Request $request, $id)
+    {
+        $correctivePreventive = CorrectivePreventive::findOrFail($id);
+        $uploaded = $request->file('file');
+        // 4) Build a unique filename
+        $name      = pathinfo($uploaded->getClientOriginalName(), PATHINFO_FILENAME);
+        $ext       = $uploaded->getClientOriginalExtension();
+        $filename  = "{$correctivePreventive->id}_" . time() . "_" . Str::slug($name) . ".{$ext}";
+
+        // 5) Store it on the public disk
+        $path = $uploaded->storeAs(Auth::user()->org.'/corrective_preventive', $filename, 'public');
+        // 6) Prepare metadata
+        $data = [
+            'corrective_preventive_id' => $correctivePreventive->id,
+            'filename'            => $uploaded->getClientOriginalName(),
+            'path'                => $path,
+            'mime_type'           => $uploaded->getClientMimeType(),
+            'size'                => $uploaded->getSize(),
+        ];
+        
+        
+        // 7b) Create new record
+        CorrectivePreventiveDocument::create($data);
+        $message = 'File uploaded successfully!';
+
+        // 8) Redirect back
+        return redirect()
+        ->back()
+        ->with('success', $message);
+    }
+
+    public function correctivePreventiveDocumentDestroy($recordId, $documentId)
+    {
+        $correctivePreventiveRecord = CorrectivePreventive::where('user_id', Auth::id())->where('id', $recordId)->firstOrFail();
+        if (!$correctivePreventiveRecord) {
+            return redirect()
+            ->back();
+        }
+        $document = CorrectivePreventiveDocument::findOrFail($documentId);
+        $document->delete();
+        
+        return redirect()
+            ->back()
+            ->with('success', 'Document deleted successfully!');
+    }
  
 
 public function toolCalibrations()
 {
-    $toolCalibrations = ToolCalibration::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
-    return view('user.tool-calibrations.list', compact('toolCalibrations'));
+    $toolCalibration = ToolCalibration::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+    return view('user.tool-calibrations.list', compact('toolCalibration'));
 }
 
 public function showToolCalibrationForm($id = null)
@@ -482,6 +704,7 @@ public function destroyToolCalibration($id)
 
 
 
+
 public function uploadToolCalibrationDocument(Request $request, $id)
     {
         $toolCalibration = ToolCalibration::findOrFail($id);
@@ -513,6 +736,8 @@ public function uploadToolCalibrationDocument(Request $request, $id)
         ->with('success', $message);
     }
     
+
+    
     public function toolCalibrationDocumentDestroy($toolCalibrationId,$documentId)
     {
         $toolCalibration = ToolCalibration::where('user_id', Auth::id())->where('id', $toolCalibrationId)->firstOrFail();
@@ -527,6 +752,7 @@ public function uploadToolCalibrationDocument(Request $request, $id)
             ->back()
             ->with('success', 'Document deleted successfully!');
     }
+    
 
 
 

@@ -38,16 +38,7 @@
                             {{ $sc->city }}
                         </td>
                           <td>
-    @php
-        $measures = json_decode($sc->measures_to_be_installed ?? '[]', true);
-
-        // Collect matching measure names from IDs
-        $measureNames = collect($measures)->map(function ($id) use ($projectMeasures) {
-            return $projectMeasures->firstWhere('id', $id)?->name;
-        })->filter()->values()->toArray(); // remove nulls
-    @endphp
-
-    {{ !empty($measureNames) ? implode(', ', $measureNames) : 'No measures specified.' }}
+  
 </td>
 
                            <td>
